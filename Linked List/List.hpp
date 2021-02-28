@@ -1,8 +1,7 @@
+#include <utility>
 #include <cassert>
 #include <stdexcept>
 #include <initializer_list>
-#include <utility>
-
 template <typename T>
 class List {
 private:
@@ -10,19 +9,35 @@ private:
 
     ListNode* dummy;
     ListNode* last;
-    size_t sz;
-
+    std::size_t sz;
+    
 public:
     class Iterator; // Forward declaration
 
     // Constructor: create a dummy node so that even an empty list has one node.
     // In an empty list last_node == dummy.
-    List() : dummy{new ListNode}, sz{}, last{dummy} {}
+    List() : dummy{new ListNode}, last{dummy}, sz{} {}
 
     // Constructor with initializer_list
-    List(std::initializer_list<T> values) : dummy{new ListNode}, sz{}, last{dummy} {
+    List(const std::initializer_list<T>& values) : dummy{new ListNode}, last{dummy}, sz{} {
         for (auto p : values)
             push_back(p);
+    }
+
+    List(const List<T>& list) 
+        : dummy{new ListNode}, last{dummy}, sz{}
+    {   
+        ListNode* node = list.dummy->next;
+        while (node) {
+            push_back(node->data);
+            node = node->next;
+        }
+    }
+
+    List(List<T>&& list)
+        : dummy{new ListNode}, last{dummy}, sz{}
+    {
+        list.swap(*this);
     }
 
     // Destructor: delete all the nodes including the dummy node
@@ -32,7 +47,7 @@ public:
     }
 
     // Insert node at the front
-    void push_front(T data) { 
+    void push_front(const T& data) { 
         ListNode* new_node = new ListNode(data, dummy->next);
         dummy->next = new_node;
         
@@ -43,7 +58,7 @@ public:
     }
 
     // Insert node at the back
-    void push_back(T data) {
+    void push_back(const T& data) {
         ListNode* new_node = new ListNode(data);
         last->next = new_node;
         
@@ -53,12 +68,12 @@ public:
     }
 
     // Insert an item at a given index. The first argument is the index of the value before which to insert (indexes start at 0)
-    void insert(size_t index, T data) {
+    void insert(std::size_t index, const T& data) {
         if (index >= sz)
             index = sz;
 
         ListNode* node = dummy;
-        size_t t_index {};
+        std::size_t t_index {};
         while (t_index++ != index)
             node = node->next;
 
@@ -102,12 +117,12 @@ public:
     }
 
     // Remove the item at a given index. If the index is greater than the list's size the function throws an exception.
-    void remove(size_t index) {
+    void remove(std::size_t index) {
         if (index >= sz)
             throw std::invalid_argument("invalid index");
         
         ListNode* node = dummy;
-        size_t t_index {};
+        std::size_t t_index {};
         while (t_index++ != index)
             node = node->next;
 
@@ -138,19 +153,19 @@ public:
         return last->data;
     }
 
-    T& at(size_t index) {
+    T& at(std::size_t index) {
         if (index >= sz)
             throw std::invalid_argument("invalid index");
         
         ListNode* node = dummy->next;
-        size_t t_index {};
+        std::size_t t_index {};
         while (t_index++ != index)
             node = node->next;
         return node->data;    
     }
 
-    size_t size()  const { return sz;      }
-    bool   empty() const { return sz == 0; }
+    std::size_t size()  const { return sz;      }
+    bool        empty() const { return sz == 0; }
 
     void clear() {
         ListNode* node = dummy->next;
@@ -165,10 +180,54 @@ public:
         sz = 0;
     }
 
+    void swap(List<T>& rhs) {
+        std::swap(sz,    rhs.sz);
+        std::swap(last,  rhs.last);
+        std::swap(dummy, rhs.dummy);
+    }
+
+    friend void swap(List<T>& lhs, List<T>& rhs) {
+        lhs.swap(rhs);
+    }
+
+    // Because self assignment happens so rarely we don't check that this != &rhs
+    List<T>&  operator=(const List<T>& rhs) {
+        List<T> temp{rhs};  // Exceptions may occur at this state so we create a temp list and then swap it with *this
+        temp.swap(*this);
+        return *this;
+    }
+
+    List<T>&  operator=(List<T>&& rhs) noexcept {
+        rhs.swap(*this);
+        return *this;
+    }
+
+    friend bool operator==(const List<T>& lhs, const List<T>& rhs) {
+        if (lhs.sz != rhs.sz)
+            return false;
+
+        ListNode* l_node = lhs.dummy->next;
+        ListNode* r_node = rhs.dummy->next;
+
+        while (l_node) {
+
+            if (l_node->data != r_node->data)
+                return false;
+
+            l_node = l_node->next;
+            r_node = r_node->next;
+        }
+            
+        return true;   
+    }
+
+    friend bool operator!=(const List<T>& lhs, const List<T>& rhs) {
+        return !(lhs == rhs);
+    }
+
     Iterator begin() { return Iterator(dummy->next); }
     Iterator end()   { return Iterator(nullptr);     }
 };
-
 
 template <typename T>
 class List<T>::ListNode {
@@ -187,11 +246,11 @@ template <typename T>
 class List<T>::Iterator {
 private:
     ListNode* current;
-    Iterator(ListNode* in_node) : current{in_node} {}
+    explicit Iterator(ListNode* in_node) : current{in_node} {}
     friend class List;
 
 public:
-    Iterator() : current{} {}
+    explicit Iterator() : current{} {}
     Iterator& operator++() {
         assert(current);
         current = current->next;
