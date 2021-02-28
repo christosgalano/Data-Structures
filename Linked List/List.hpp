@@ -2,6 +2,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <initializer_list>
+
 template <typename T>
 class List {
 private:
@@ -10,7 +11,7 @@ private:
     ListNode* dummy;
     ListNode* last;
     std::size_t sz;
-    
+
 public:
     class Iterator; // Forward declaration
 
