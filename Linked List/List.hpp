@@ -49,7 +49,7 @@ public:
 
     // Insert node at the front
     void push_front(const T& data) { 
-        ListNode* new_node = new ListNode(data, dummy->next);
+        ListNode* new_node = new ListNode{data, dummy->next};
         dummy->next = new_node;
         
         // Update size and last
@@ -60,7 +60,7 @@ public:
 
     // Insert node at the back
     void push_back(const T& data) {
-        ListNode* new_node = new ListNode(data);
+        ListNode* new_node = new ListNode{data};
         last->next = new_node;
         
         // Update size and last
@@ -145,12 +145,14 @@ public:
     }
 
     T& front() {
-        if (!sz) throw std::logic_error("list is empty");
+        if (!sz)
+            throw std::logic_error("list is empty");
         return dummy->next->data;
     }
 
     T& back() {
-        if (!sz) throw std::logic_error("list is empty");
+        if (!sz)
+            throw std::logic_error("list is empty");
         return last->data;
     }
 
@@ -226,8 +228,8 @@ public:
         return !(lhs == rhs);
     }
 
-    Iterator begin() { return Iterator(dummy->next); }
-    Iterator end()   { return Iterator(nullptr);     }
+    Iterator begin() { return Iterator{dummy->next}; }
+    Iterator end()   { return Iterator{};            }
 };
 
 template <typename T>
@@ -260,7 +262,7 @@ public:
     
     Iterator operator++(int) {
         assert(current);
-        Iterator temp(*this);
+        Iterator temp{*this};
         current = current->next;
         return temp;
     }

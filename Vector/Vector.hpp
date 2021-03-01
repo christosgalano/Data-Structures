@@ -124,21 +124,21 @@ void Vector<T>::pop_back() {
 template <typename T>
 T& Vector<T>::front() {
     if (!sz)
-        throw std::runtime_error("vector is empty");
+        throw std::logic_error("vector is empty");
     return data[0];
 }
 
 template <typename T>
 T& Vector<T>::back() {
     if (!sz)
-        throw std::runtime_error("vector is empty");
+        throw std::logic_error("vector is empty");
     return data[sz - 1];
 }
 
 template <typename T>
 T& Vector<T>::at(std::size_t index) {
     if (!sz)
-        throw std::runtime_error("vector is empty");
+        throw std::logic_error("vector is empty");
     else if (index >= sz)
         throw std::invalid_argument("invalid index");
     return data[index];
