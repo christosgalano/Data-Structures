@@ -148,7 +148,7 @@ typename Vector<T>::Iterator Vector<T>::insert(Vector<T>::Iterator pos, const T&
         cap *= capacity_factor;
         
         T* temp = new T[cap];
-        for (Vector<T>::Iterator iter = begin(); iter != pos; ++iter, ++i)
+        for (Vector<T>::Iterator iter = this->begin(); iter != pos; ++iter, ++i)
             temp[i] = data[i];
         temp[i] = value;
 
@@ -165,7 +165,7 @@ typename Vector<T>::Iterator Vector<T>::insert(Vector<T>::Iterator pos, const T&
         return Iterator{data + index};
     }
     
-    for(Vector<T>::Iterator iter = end(); iter != pos; --iter, ++i)
+    for(Vector<T>::Iterator iter = this->end(); iter != pos; --iter, ++i)
         data[sz - i] = data[sz - i - 1];
     *pos = value;
     ++sz;
