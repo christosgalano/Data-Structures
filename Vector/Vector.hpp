@@ -57,17 +57,21 @@ public:
 
     ~Vector() { delete[] data; }
 
-    // MethodsW
+    // Methods
     void push_back(const T& value);
     void push_back(T&& value);
     void pop_back();
+
+    Iterator erase(Iterator pos);
+    Iterator insert(Iterator pos, const T& value);
+    Iterator find(const T& key);
 
     T& front();
     T& back();
     T& at(std::size_t index);
 
-    std::size_t size()      const  { return sz;      }
-    std::size_t capacity()  const  { return cap;     }
+    std::size_t size()      const  { return sz;  }
+    std::size_t capacity()  const  { return cap; }
 
     bool empty() const  { return sz == 0; }
     void clear();
@@ -83,7 +87,6 @@ public:
     // Iterator methods
     Iterator begin() { return Iterator{data};      }
     Iterator end()   { return Iterator{data + sz}; }
-    Iterator find(const T& key);
 
 };
 
@@ -119,6 +122,55 @@ template <typename T>
 void Vector<T>::pop_back() {
     if (sz > 0)
         --sz;
+}
+
+template<typename T>
+typename Vector<T>::Iterator Vector<T>::erase(Vector<T>::Iterator pos) {
+    std::size_t i {};
+
+    for (auto iter = this->begin(); iter != pos; ++iter, ++i);
+    
+    std::size_t index {i};
+
+    for (auto iter = pos + 1; iter != this->end(); ++iter, ++i) 
+        data[i] = data[i + 1];
+
+    if (index >= --sz)
+        index = 0;
+
+    return Iterator{data + index};
+}
+
+template<typename T>
+typename Vector<T>::Iterator Vector<T>::insert(Vector<T>::Iterator pos, const T& value){
+    std::size_t i = 0;
+    if (cap == sz) {
+        cap *= capacity_factor;
+        
+        T* temp = new T[cap];
+        for (Vector<T>::Iterator iter = begin(); iter != pos; ++iter, ++i)
+            temp[i] = data[i];
+        temp[i] = value;
+
+        std::size_t index {i++};
+        
+        for (std::size_t j = 0; j < sz - index; ++j, ++i)
+            temp[i] = data[i-1];
+
+        delete[] data;
+        
+        data = temp;
+        ++sz;
+
+        return Iterator{data + index};
+    }
+    
+    for(Vector<T>::Iterator iter = end(); iter != pos; --iter, ++i)
+        data[sz - i] = data[sz - i - 1];
+    *pos = value;
+    ++sz;
+
+    return pos;
 }
 
 template <typename T>
@@ -224,6 +276,9 @@ public:
     explicit Iterator() : data_ptr{} {}
     explicit Iterator(T* in_ptr) : data_ptr{in_ptr} {}
 
+    Iterator(const Iterator&) = default;
+    ~Iterator() = default;
+
     Iterator& operator++() {
         ++data_ptr;
         return *this;
@@ -233,6 +288,11 @@ public:
         Iterator temp{*this};
         ++data_ptr;
         return temp;
+    }
+
+    Iterator operator+(int d) {
+        data_ptr += d;
+        return *this;
     }
 
     Iterator& operator--() {
@@ -246,10 +306,13 @@ public:
         return temp;
     }
 
+    Iterator operator-(int d) {
+        data_ptr -= d;
+        return *this;
+    }
+
     bool operator==(const Iterator& rhs) const { return data_ptr == rhs.data_ptr; }
     bool operator!=(const Iterator& rhs) const { return data_ptr != rhs.data_ptr; }
 
     T& operator*() const { return *data_ptr; }
 };
-
-// TODO - add insert_at and remove
