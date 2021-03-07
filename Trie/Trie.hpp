@@ -7,10 +7,7 @@ public:
 		TrieNode* children[26] = { nullptr };
 		bool isWord;
 		
-		TrieNode(char c) {
-			this->c = c;
-			isWord = false;
-		}
+		TrieNode(char in_c) : c{in_c}, isWord{false} {}
 	};
 
 	// Constructor - Destructor
