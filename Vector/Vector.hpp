@@ -155,7 +155,7 @@ typename Vector<T>::Iterator Vector<T>::insert(Vector<T>::Iterator pos, const T&
         std::size_t index {i++};
         
         for (std::size_t j = 0; j < sz - index; ++j, ++i)
-            temp[i] = data[i-1];
+            temp[i] = data[i - 1];
 
         delete[] data;
         
