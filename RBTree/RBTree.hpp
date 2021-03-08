@@ -1,10 +1,3 @@
-//
-// Red Black Tree
-//
-
-#ifndef RED_BLACK_TREE_RBTREE_H
-#define RED_BLACK_TREE_RBTREE_H
-
 #include <iostream>  // For std::cout
 #include <algorithm> // For std::swap
 
@@ -445,5 +438,3 @@ Node<T>* RBTree<T>::maxValueNode(Node<T>*& node) {
         ptr = ptr->right;
     return ptr;
 }
-
-#endif //RED_BLACK_TREE_RBTREE_H
