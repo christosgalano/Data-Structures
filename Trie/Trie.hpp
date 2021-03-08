@@ -24,4 +24,3 @@ private:
 	TrieNode* get_TrieNode(const std::string& word);
 	void destroy(TrieNode* to_destroy);
 };
-

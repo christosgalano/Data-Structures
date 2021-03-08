@@ -10,7 +10,7 @@ Trie::~Trie() {
 
 void Trie::destroy(TrieNode* n) {
 	for (TrieNode* n : n->children)
-		if (n != nullptr) 
+		if (n) 
 			destroy(n);
 	delete n;
 }
@@ -40,7 +40,8 @@ bool Trie::starts_with(const std::string& word) {
 Trie::TrieNode* Trie::get_TrieNode(const std::string& word) {
 	TrieNode* current = root;
 	for (char c : word) {
-		if (!current->children[c - 'a']) return nullptr;
+		if (!current->children[c - 'a'])
+			return nullptr;
 		current = current->children[c - 'a'];
 	}
 	return current;
