@@ -105,10 +105,9 @@ public:
 
     std::vector<T> get_vertices() {
         std::vector<T> to_return;
-        for (auto v : vertices) {
+        for (auto v : vertices)
             to_return.push_back(v.first);
-        }
-
+        
         return to_return;
     }
 
