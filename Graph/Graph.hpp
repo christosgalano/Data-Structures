@@ -126,7 +126,7 @@ unsigned Graph<T>::get_weight(const T& v1, const T& v2) {
 template <typename T>
 std::vector<T> Graph<T>::get_vertices() {
     std::vector<T> to_return;
-    for (auto v : vertices)
+    for (auto& v : vertices)
         to_return.push_back(v.first);        
     return to_return;
 }
@@ -137,7 +137,7 @@ std::vector<T> Graph<T>::get_neighboors(const T& vertex) {
         throw std::invalid_argument("no such vertex in the graph");
 
     std::vector<T> neighboors;
-    for (auto v : vertices[vertex].get_neighboors())
+    for (auto v& : vertices[vertex].get_neighboors())
         neighboors.push_back((v.get_dest()).get_data());
 
     return neighboors;
@@ -180,7 +180,6 @@ public:
     }
 
     void change_weight(const T& vertex, unsigned new_weight) {
-        // auto iter = std::find(neighboors.begin(), neighboors.end(), Edge{vertex});
         for (auto& e : neighboors)
             if (e.get_dest() == vertex)
                 e.set_weight(new_weight);   
