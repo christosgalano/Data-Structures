@@ -1,10 +1,6 @@
 #include "Vector.hpp"
 
-#include <algorithm>
-#include <cstddef>
 #include <functional>
-#include <stdexcept>
-#include <utility>
 
 
 // C is set to std::less so the default version is a MaxPriorityQueue,
