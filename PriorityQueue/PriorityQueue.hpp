@@ -78,7 +78,7 @@ public:
         heapify_up(++sz);
     }
 
-    T& max() {
+    const T& max() const {
         return data[1];
     }
     
