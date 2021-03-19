@@ -3,18 +3,18 @@
 #include <functional>
 
 
-// C is set to std::less so the default version is a MaxPriorityQueue,
-// for MinPriorityQueue set the template argument at std::greater upon creation (other
+// C is set to std::less<T> so the default version is a MaxPriorityQueue,
+// for MinPriorityQueue set the template argument at std::greater<T> upon creation (other
 // custom types can be used, provided that the neccessary function is passed as an argument to the constructor).
 
-template <typename T, typename C = std::less<>>  
+template <typename T, typename C = std::less<T>>  
 class PriorityQueue {
 private:
     Vector<T> data;
     C comparator;
-    std::size_t sz; // Current size of the PQ - not taking into consideration the dummy element of the Vector
+    std::size_t sz;     // Current size of the PQ - not taking into consideration the dummy element of the Vector
 
-    // heapify_up / heapify_down restore the heap property after an insertion / removal
+    // heapify_up - heapify_down restore the heap property after an insertion - removal
     void heapify_up(std::size_t index) {
         if (index == 1)     // We reached the root
             return;
@@ -56,32 +56,61 @@ private:
 public:
     // Constructors - we always use a dummy element at position 0 of the vector so the indexes arithmetic is simpler
     PriorityQueue() 
-        : data(1, T{}), sz{} {}
+        : data(1, T{}), comparator{C()}, sz{} {}
 
     PriorityQueue(C in_comparator)
         : data(1, T{}), comparator{in_comparator}, sz{} {}
     
     PriorityQueue(Vector<T>& vec)
-        : data{vec}, sz{vec.size()}
+        : data{vec}, comparator{C()}, sz{vec.size()}
     {   
         efficient_heapify();
     }
 
     PriorityQueue(Vector<T>& vec, C in_comparator)
-        : data{vec}, comparator{in_comparator}, sz{vec.size()}
+        : data{vec}, comparator{in_comparator}, sz{data.size()}
     {
         efficient_heapify();
     }
 
-    void insert(T value) {
+    PriorityQueue(Vector<T>&& vec)
+        : data{std::forward<Vector<T>>(vec)}, comparator{C()}, sz{data.size()}
+    {   
+        efficient_heapify();
+    }
+
+    PriorityQueue(Vector<T>&& vec, C in_comparator)
+        : data{std::forward<Vector<T>>(vec)}, comparator{in_comparator}, sz{data.size()}
+    {   
+        efficient_heapify();
+    }
+
+    PriorityQueue(const std::initializer_list<T>& values)
+        : data{values}, comparator{C()}, sz{data.size()}
+    {
+        efficient_heapify();
+    }
+
+    PriorityQueue(const std::initializer_list<T>& values, C in_comparator)
+        : data{values}, comparator{in_comparator}, sz{data.size()}
+    {
+        efficient_heapify();
+    }
+
+    void insert(const T& value) {
         data.push_back(value);
         heapify_up(++sz);
     }
 
-    T& max() {
-        return data[1];
+    void insert(T&& value) {
+        data.push_back(std::forward<T>(value));
+        heapify_up(++sz);
     }
-    
+
+    T top() {
+        return data[1];
+    }    
+
     void remove() {
         if (!sz) return;
 
