@@ -102,14 +102,9 @@ public:
         heapify_up(++sz);
     }
 
-<<<<<<< HEAD
     void insert(T&& value) {
         data.push_back(std::forward<T>(value));
         heapify_up(++sz);
-=======
-    const T& max() const {
-        return data[1];
->>>>>>> 17a41d02f4436f861aa2731d607d492d1f55240c
     }
 
     T top() {
