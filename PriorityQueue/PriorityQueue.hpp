@@ -105,8 +105,6 @@ public:
     void insert(T&& value) {
         data.push_back(std::forward<T>(value));
         heapify_up(++sz);
-    T top() {
-        return data[1];
     }
 
     T top() {
