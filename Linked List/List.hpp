@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <initializer_list>
 
+/// Implementation of singly linked list ///
+
 template <typename T>
 class List {
 private:

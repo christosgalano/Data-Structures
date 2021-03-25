@@ -1,13 +1,9 @@
 #include "Vector.hpp"
-
 #include <functional>
 
+/// Implementation of a PriorityQueue using Vector class ///
 
-// C is set to std::less<T> so the default version is a MaxPriorityQueue,
-// for MinPriorityQueue set the template argument at std::greater<T> upon creation (other
-// custom types can be used, provided that the neccessary function is passed as an argument to the constructor).
-
-template <typename T, typename C = std::less<T>>  
+template <typename T, typename C = std::less<T>>  // C is set to std::less<T> so the default version is a MaxPriorityQueue
 class PriorityQueue {
 private:
     Vector<T> data;

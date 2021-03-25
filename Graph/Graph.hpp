@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <stdexcept>
 
+/// Implementation of an undirected weighted graph ///
 
 template <typename T>
 class Graph {
@@ -73,7 +74,7 @@ void Graph<T>::add_edge(const T& v1, const T& v2, unsigned weight) {
     if (!validate(v1, v2))
         throw std::invalid_argument("no such vertex/vertices in the graph");
 
-    vertices[v1].add_edge(vertices[v2], weight);
+    vertices[v1].add_edge(vertices[v2], weight);    // graph is undirected
     vertices[v2].add_edge(vertices[v1], weight);    
     ++no_edges;
 }
@@ -140,7 +141,7 @@ std::vector<T> Graph<T>::get_neighboors(const T& vertex) {
     for (auto v& : vertices[vertex].get_neighboors())
         neighboors.push_back((v.get_dest()).get_data());
 
-    return neighboors;
+    return neighboors;  // we return a copy of the neighboors, the user is only allowed to modify the graph through its methods
 }
 
 
@@ -209,7 +210,7 @@ public:
         : dest{&in_dest}, weight{in_weight} {}
 
     bool operator==(const Edge& rhs) const {
-        return *dest == *rhs.dest;
+        return *dest == *rhs.dest;  // no duplicate vertices
     }
     
     Vertex&    get_dest() const { return *dest;  }
@@ -217,5 +218,3 @@ public:
 
     void set_weight(unsigned new_weight) { weight = new_weight; }
 };
-
-// TODO : add comments, shortest_path function, make the graph directed
