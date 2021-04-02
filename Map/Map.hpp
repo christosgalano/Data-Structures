@@ -67,6 +67,14 @@ private:
         old_array.clear();
     }
 
+    V& get_value(const K& key) {
+        unsigned pos = hash_function(key) % cap;
+        for (auto& node : array[pos])
+            if (node.key == key)
+                return node.value;
+        throw std::runtime_error("");
+    }
+
 public:
     Map() : hash_function{H()}, array{cap} {}
 
@@ -92,16 +100,33 @@ public:
             rehash();
     } 
 
-    V& operator[](const K& key) {
+    void remove(const K& key) {
         unsigned pos = hash_function(key) % cap;
-        for (auto& node : array[pos])
-            if (node.key == key)
-                return node.value;
-        throw std::invalid_argument("no such key in the map");
+        if (array[pos].size()) {
+            for (auto iter = array[pos].begin(); iter != array[pos].end(); ++iter) {
+                if (iter->key == key) {
+                    array[pos].erase(iter);
+                    --sz;
+                    return;
+                }
+            }
+        }
+    }
+
+    V& operator[](const K& key) {
+        // If the key exists in the map we return the value it maps to, otherwise 
+        // we create a new entry that maps the given key to a default value V.
+        try {
+            return get_value(key);  
+        }
+        catch (std::runtime_error& e) {
+            insert(key, V{});
+            return get_value(key);
+        }
     }
 
     std::size_t size() const { return sz;      }
     bool empty()       const { return sz == 0; }
 };
 
-// TODO : add remove, find, iterator, adjust []
+// TODO : iterator

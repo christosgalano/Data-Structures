@@ -10,17 +10,24 @@ int main() {
 
     srand(time(NULL));
 
-    Map<int, string> map;
+    Map<int, double> map;
 
-    std::vector<int> vec;
-    for (int i = 0; i < 65; ++i)
-        vec.push_back(rand() % 100);
+    map[1] = 110.5;
 
-    for (int i = 0; i < 65; ++i)
-        map.insert(vec[i], "hello");
+    cout << map[1] << ' ' << map[0] << '\n';
+    cout << map.size() << '\n';
 
-    std::cout << map.size() << '\n';
+    map.remove(0);
 
-    for (int i = 0; i < 65; ++i)
-        std::cout << vec[i] << ' ' << map[vec[i]] << '\n';
+    cout << map.size() << '\n';
+
+    Map<string, string> mp;
+    
+    mp["Alex"] = "Bold";
+    mp["Chris"];
+    
+    cout << mp.size() << '\n';
+
+    mp.remove("Alex");
+    cout << mp.size() << '\n';
 }
