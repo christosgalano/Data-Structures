@@ -41,10 +41,8 @@ public:
             // If we have reached the end of the unordered_map, we find the unordered_map's iterator
             // that points to the last element. The vector's iterator is set to
             // the end of the last element's vector.
-            umap_iter last;
             for (umap_iter iter = dic->cnt.begin(); iter != dic->cnt.end(); ++iter)
-                last = iter;
-            ump = last;
+                ump = iter;
             vc = ump->second.end();
         } 
 
@@ -89,7 +87,7 @@ public:
             return temp;            
         }
 
-        // Equality and unequality conditions
+        // Equality and inequality conditions
         bool operator==(const MyIterator& r) {
             return dic == r.dic && ump == r.ump && vc == r.vc;
         }

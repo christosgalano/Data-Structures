@@ -2,11 +2,16 @@
 #include <cassert>
 #include <stdexcept>
 #include <functional>
-#include <iostream>
+#include <iterator>
+
 
 template <typename K, typename V, typename H = std::hash<K>>
 class Map {
 private:
+    struct Node;
+    using outer_vec_iter = typename std::vector<std::vector<Node>>::iterator;
+    using inner_vec_iter = typename std::vector<Node>::iterator;
+
     static constexpr int prime_sizes[] = { 
         53, 97, 193, 389, 769, 1543, 3079, 6151, 12289,
         24593, 49157, 98317, 196613, 393241,
@@ -76,6 +81,76 @@ private:
     }
 
 public:
+    class Iterator {
+    private:
+        Map<K,V,H>* map;
+        outer_vec_iter out_vec;
+        inner_vec_iter in_vec;
+        std::pair<K,V> p;
+
+        //  Helping function
+        void shift() {
+            while (true) {
+                if (++in_vec != out_vec->end())     return;
+
+                if (++out_vec == map->array.end())  break;
+
+                in_vec = out_vec->begin();
+
+                if (out_vec != map->array.end())    return;
+            }
+
+            out_vec = std::next(map->array.begin(), map->sz);
+            in_vec  = out_vec->end();
+        }
+
+    public:
+        Iterator() : map{} {}
+
+        Iterator(Map<K,V,H>* in_map) 
+            : map{in_map}
+        {
+            out_vec = map->array.begin();
+            in_vec  = out_vec->begin();
+        }
+
+        Iterator(Map<K,V,H>* in_map, outer_vec_iter in_out_vec, inner_vec_iter in_in_vec)
+            : map{in_map}, out_vec{in_out_vec}, in_vec{in_in_vec} {}
+
+        std::pair<K,V>& operator*() {
+            p.first  = in_vec->key;
+            p.second = in_vec->value;
+            return p;
+        }
+
+        std::pair<K,V>* operator->() {
+            p.first  = in_vec->key;
+            p.second = in_vec->value;
+            return &p;
+        }
+        
+        Iterator& operator++() {
+            shift();
+            return *this;
+        }
+        
+        Iterator operator++(int) {
+            Iterator temp = *this;
+            operator++();
+            return temp;            
+        }
+
+        bool operator==(const Iterator& rhs) {
+            return map == rhs.map && out_vec == rhs.out_vec && in_vec == rhs.in_vec;
+        }
+
+        bool operator!=(const Iterator& rhs) {
+            return !operator==(rhs);
+        }
+
+    };
+
+
     Map() : hash_function{H()}, array{cap} {}
 
     void insert(const K& key, const V& value) {
@@ -127,6 +202,20 @@ public:
 
     std::size_t size() const { return sz;      }
     bool empty()       const { return sz == 0; }
-};
 
-// TODO : iterator
+    Iterator find(K key) {
+        for (Iterator iter = begin(); iter != end(); ++iter)
+            if (iter->first == key)
+                return iter;
+        return end();
+    }
+
+    Iterator begin() {
+        return Iterator{this};
+    }
+    
+    Iterator end() {
+        outer_vec_iter last_pos = std::next(array.begin(), sz);
+        return Iterator{this, last_pos, last_pos->end()};
+    }
+};
