@@ -81,6 +81,61 @@ private:
     }
 
 public:
+    Map() : hash_function{H()}, array{cap} {}
+
+    Map(H in_hash)
+        : hash_function{in_hash()}, array{cap} {}
+
+    void insert(const K& key, const V& value) {
+        bool already_in_map = false;
+        unsigned pos = hash_function(key) % cap;
+
+        for (auto& node : array[pos]) {
+            if (node.key == key) {
+                node.key = key;
+                node.value = value;
+                already_in_map = true;
+            }
+        }
+
+        if (!already_in_map) {
+            array[pos].push_back(Node{key, value});
+            ++sz;
+        }
+
+        double load_factor = static_cast<double>(sz) / cap;
+        if (load_factor > max_load_factor)
+            rehash();
+    } 
+
+    void remove(const K& key) {
+        unsigned pos = hash_function(key) % cap;
+        if (array[pos].size()) {
+            for (auto iter = array[pos].begin(); iter != array[pos].end(); ++iter) {
+                if (iter->key == key) {
+                    array[pos].erase(iter);
+                    --sz;
+                    return;
+                }
+            }
+        }
+    }
+
+    V& operator[](const K& key) {
+        // If the key exists in the map we return the value it maps to, otherwise 
+        // we create a new entry that maps the given key to a default value V.
+        try {
+            return get_value(key);  
+        }
+        catch (std::runtime_error& e) {
+            insert(key, V{});
+            return get_value(key);
+        }
+    }
+
+    std::size_t size() const { return sz;      }
+    bool empty()       const { return sz == 0; }
+
     class Iterator {
     private:
         Map<K,V,H>* map;
@@ -151,58 +206,6 @@ public:
     };
 
 
-    Map() : hash_function{H()}, array{cap} {}
-
-    void insert(const K& key, const V& value) {
-        bool already_in_map = false;
-        unsigned pos = hash_function(key) % cap;
-
-        for (auto& node : array[pos]) {
-            if (node.key == key) {
-                node.key = key;
-                node.value = value;
-                already_in_map = true;
-            }
-        }
-
-        if (!already_in_map) {
-            array[pos].push_back(Node{key, value});
-            ++sz;
-        }
-
-        double load_factor = static_cast<double>(sz) / cap;
-        if (load_factor > max_load_factor)
-            rehash();
-    } 
-
-    void remove(const K& key) {
-        unsigned pos = hash_function(key) % cap;
-        if (array[pos].size()) {
-            for (auto iter = array[pos].begin(); iter != array[pos].end(); ++iter) {
-                if (iter->key == key) {
-                    array[pos].erase(iter);
-                    --sz;
-                    return;
-                }
-            }
-        }
-    }
-
-    V& operator[](const K& key) {
-        // If the key exists in the map we return the value it maps to, otherwise 
-        // we create a new entry that maps the given key to a default value V.
-        try {
-            return get_value(key);  
-        }
-        catch (std::runtime_error& e) {
-            insert(key, V{});
-            return get_value(key);
-        }
-    }
-
-    std::size_t size() const { return sz;      }
-    bool empty()       const { return sz == 0; }
-
     Iterator find(K key) {
         for (Iterator iter = begin(); iter != end(); ++iter)
             if (iter->first == key)
@@ -219,3 +222,4 @@ public:
         return Iterator{this, last_pos, last_pos->end()};
     }
 };
+
