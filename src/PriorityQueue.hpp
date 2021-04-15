@@ -1,7 +1,8 @@
 #include "Vector.hpp"
 #include <functional>
 
-/// Implementation of a PriorityQueue using Vector class ///
+
+namespace cds {
 
 template <typename T, typename C = std::less<T>>  // C is set to std::less<T> so the default version is a MaxPriorityQueue
 class PriorityQueue {
@@ -119,3 +120,5 @@ public:
     std::size_t size() const { return sz;      }
     bool empty()       const { return sz == 0; }
 };
+
+}

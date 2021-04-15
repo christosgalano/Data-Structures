@@ -1,16 +1,18 @@
-#include <vector>
+#include "Vector.hpp"
 #include <cassert>
 #include <stdexcept>
 #include <functional>
 #include <iterator>
 
 
+namespace cds {
+
 template <typename K, typename V, typename H = std::hash<K>>
 class Map {
 private:
     struct Node;
-    using outer_vec_iter = typename std::vector<std::vector<Node>>::iterator;
-    using inner_vec_iter = typename std::vector<Node>::iterator;
+    using outer_vec_iter = typename Vector<Vector<Node>>::iterator;
+    using inner_vec_iter = typename Vector<Node>::iterator;
 
     static constexpr int prime_sizes[] = { 
         53, 97, 193, 389, 769, 1543, 3079, 6151, 12289,
@@ -42,10 +44,10 @@ private:
     std::size_t cap {prime_sizes[0]};
 
     H hash_function;
-    std::vector<std::vector<Node>> array;
+    Vector<Vector<Node>> array;
 
     void rehash() {
-        std::vector<std::vector<Node>> old_array {std::move(array)};
+        Vector<Vector<Node>> old_array {std::move(array)};
 
         std::size_t old_cap = cap;
         int prime_no = sizeof(prime_sizes) / sizeof(int);
@@ -223,3 +225,4 @@ public:
     }
 };
 
+}
