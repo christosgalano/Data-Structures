@@ -38,6 +38,7 @@ public:
     std::size_t capacity()  const  { return cap;     }
     bool empty()            const  { return sz == 0; }
 
+    void clear();
     void swap(Vector<T>& vec) noexcept;
 
     T&          operator[] (std::size_t index);
@@ -56,7 +57,6 @@ private:
     std::size_t cap;
     static constexpr short min_cap {10};
     static constexpr short capacity_factor {2};
-    void clear();
 };
 
 

@@ -61,7 +61,8 @@ public:
     T& back();
     T& at(std::size_t index);
 
-    void swap(List<T>& rhs);
+    void clear();
+    void swap(List<T>& rhs) noexcept;
 
     List<T>&  operator=(const List<T>& rhs);
     List<T>&  operator=(List<T>&& rhs) noexcept;
@@ -80,7 +81,6 @@ private:
     ListNode<T>* dummy;
     ListNode<T>* last;
     std::size_t sz;
-    void clear();
 };
 
 
@@ -273,11 +273,12 @@ void List<T>::clear() {
 
 
 template <typename T>
-void List<T>::swap(List<T>& rhs) {
+void List<T>::swap(List<T>& rhs) noexcept {
     std::swap(sz,    rhs.sz);
     std::swap(last,  rhs.last);
     std::swap(dummy, rhs.dummy);
 }
+
 
 template <typename T>
 void swap(List<T>& lhs, List<T>& rhs) {
