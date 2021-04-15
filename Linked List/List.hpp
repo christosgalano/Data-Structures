@@ -26,31 +26,14 @@ class ListNode {
 
 template <typename T>
 class List {
-private:
-    ListNode<T>* dummy;
-    ListNode<T>* last;
-    std::size_t sz;
-
-    void clear();
-    friend class Iterator<T>;
-    friend class Const_Iterator<T>;
-
 public:
     using iterator = Iterator<T>;
     using const_iterator = Const_Iterator<T>;
 
-    // Constructor: create a dummy node so that even an empty list has one node.
-    // In an empty list last_node == dummy.
     List();
-
-    // Constructor with initializer_list
     explicit List(const std::initializer_list<T>& values);
-
     List(const List<T>& list);
-
     List(List<T>&& list) noexcept;
-
-    // Destructor: delete all the nodes including the dummy node
     ~List();
 
     // Insert node at the front
@@ -75,20 +58,13 @@ public:
     iterator find(T key);
 
     T& front();
-
     T& back();
-
     T& at(std::size_t index);
 
     void swap(List<T>& rhs);
 
     List<T>&  operator=(const List<T>& rhs);
-
     List<T>&  operator=(List<T>&& rhs) noexcept;
-
-    friend void swap(List<T>& lhs, List<T>& rhs) {
-        lhs.swap(rhs);
-    }
 
     std::size_t size()  const { return sz;      }
     bool        empty() const { return sz == 0; }
@@ -99,11 +75,21 @@ public:
 
     const_iterator cbegin() const { return const_iterator{dummy->next}; }
     const_iterator cend()   const { return const_iterator{};            }
+
+private:
+    ListNode<T>* dummy;
+    ListNode<T>* last;
+    std::size_t sz;
+    void clear();
 };
 
 
+// Constructor: create a dummy node so that even an empty list has one node.
+// In an empty list last_node == dummy.
 template <typename T>
-List<T>::List() : dummy{new ListNode<T>}, last{dummy}, sz{} {}
+List<T>::List() 
+    : dummy{new ListNode<T>}, last{dummy}, sz{} {}
+
 
 template<typename T>
 List<T>::List(const std::initializer_list<T>& values)
@@ -112,6 +98,7 @@ List<T>::List(const std::initializer_list<T>& values)
     for (auto p : values)
         push_back(p);
 } 
+
 
 template <typename T>
 List<T>::List(const List<T>& list)
@@ -124,6 +111,7 @@ List<T>::List(const List<T>& list)
     }
 }
 
+
 template <typename T>
 List<T>::List(List<T>&& list) noexcept
     : dummy{new ListNode<T>}, last{dummy}, sz{}
@@ -131,11 +119,13 @@ List<T>::List(List<T>&& list) noexcept
     list.swap(*this);
 }
 
+// Destructor: delete all the nodes including the dummy node
 template <typename T>
 List<T>::~List() {
     clear();
     delete dummy;
 }
+
 
 template<typename T>
 void List<T>::push_front(const T& data) {
@@ -148,6 +138,7 @@ void List<T>::push_front(const T& data) {
     ++sz;     
 }
 
+
 template <typename T>
 void List<T>::push_back(const T& data) {
     ListNode<T>* new_node = new ListNode<T>{data};
@@ -157,6 +148,7 @@ void List<T>::push_back(const T& data) {
     last = new_node;
     ++sz;   
 }
+
 
 template<typename T>
 void List<T>::insert(std::size_t index, const T& data) {
@@ -177,6 +169,7 @@ void List<T>::insert(std::size_t index, const T& data) {
     ++sz;    
 }
 
+
 template<typename T>
 void List<T>::pop_front() {
     if (!sz)
@@ -190,6 +183,7 @@ void List<T>::pop_front() {
     delete first;
     --sz;    
 }
+
 
 template<typename T>
 void List<T>::pop_back() {
@@ -205,6 +199,7 @@ void List<T>::pop_back() {
     node->next = nullptr;
     --sz;    
 }
+
 
 template<typename T>
 void List<T>::remove(std::size_t index) {
@@ -225,6 +220,7 @@ void List<T>::remove(std::size_t index) {
     --sz;    
 }
 
+
 template <typename T>
 typename List<T>::iterator List<T>::find(T key) {
     for (auto iter = begin(); iter != end(); ++iter)
@@ -233,6 +229,7 @@ typename List<T>::iterator List<T>::find(T key) {
     return end();
 }
 
+
 template <typename T>
 T& List<T>::front() {
     if (!sz)
@@ -240,12 +237,14 @@ T& List<T>::front() {
     return dummy->next->data;
 }
 
+
 template <typename T>
 T& List<T>::back() {
     if (!sz)
         throw std::logic_error("list is empty");
     return last->data;
 }
+
 
 template <typename T>
 T& List<T>::at(std::size_t index) {
@@ -257,6 +256,7 @@ T& List<T>::at(std::size_t index) {
         node = node->next;
     return node->data;    
 }
+
 
 template <typename T>
 void List<T>::clear() {
@@ -271,12 +271,19 @@ void List<T>::clear() {
     sz = 0;
 }
 
+
 template <typename T>
 void List<T>::swap(List<T>& rhs) {
     std::swap(sz,    rhs.sz);
     std::swap(last,  rhs.last);
     std::swap(dummy, rhs.dummy);
 }
+
+template <typename T>
+void swap(List<T>& lhs, List<T>& rhs) {
+    lhs.swap(rhs);
+}
+
 
 template <typename T>
 List<T>&  List<T>::operator=(const List<T>& rhs) {
@@ -286,11 +293,13 @@ List<T>&  List<T>::operator=(const List<T>& rhs) {
     return *this;
 }
 
+
 template <typename T>
 List<T>&  List<T>::operator=(List<T>&& rhs) noexcept {
     rhs.swap(*this);
     return *this;
 }
+
 
 template <typename T>
 bool operator==(const List<T>& lhs, const List<T>& rhs) {
@@ -306,6 +315,7 @@ bool operator==(const List<T>& lhs, const List<T>& rhs) {
     
     return true;   
 }
+
 
 template <typename T>
 bool operator!=(const List<T>& lhs, const List<T>& rhs) {
