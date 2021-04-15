@@ -22,7 +22,8 @@ The script folder contains all the scripts that are needed to automatically buil
 # Build project with testing ON, where the tests excectutables are installed in: dist/BUILD_TYPE/bin
 >> ./build.sh --build_tests=ON
 
-# If you have already built the project and just make changes to the test files, then simply run for the changes to take place
+# If you have already built the project and just make changes to the test files,
+# then simply run for the changes to take place
 >> ./make.sh
 
 # Run all tests
