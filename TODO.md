@@ -5,10 +5,9 @@
 
 ### In Progress
 
-- [ ] Create test_pq 
+- [ ] Add test_vector 
 
 ### Done ✓
 
 - [x] Add scripts
-- [x] Add list_test
-- [x] Add vector_test
+- [x] Add test_list
