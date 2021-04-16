@@ -34,8 +34,8 @@ public:
 
     List();
     explicit List(const std::initializer_list<T>& values);
-    List(const List<T>& list);
-    List(List<T>&& list) noexcept;
+    List(const List& list);
+    List(List&& list) noexcept;
     ~List();
 
     // Insert node at the front
@@ -66,12 +66,11 @@ public:
     void clear();
     void swap(List<T>& rhs) noexcept;
 
-    List<T>&  operator=(const List<T>& rhs);
-    List<T>&  operator=(List<T>&& rhs) noexcept;
+    List&  operator=(const List& rhs);
+    List&  operator=(List&& rhs) noexcept;
 
     std::size_t size()  const { return sz;      }
     bool        empty() const { return sz == 0; }
-
 
     iterator begin() { return iterator{dummy->next}; }
     iterator end()   { return iterator{};            }
@@ -175,7 +174,7 @@ void List<T>::insert(std::size_t index, const T& data) {
 template<typename T>
 void List<T>::pop_front() {
     if (!sz)
-        throw std::logic_error("list is empty");
+        throw std::runtime_error("list is empty");
 
     ListNode<T>* first = dummy->next;
     dummy->next = first->next;
@@ -190,7 +189,7 @@ void List<T>::pop_front() {
 template<typename T>
 void List<T>::pop_back() {
     if (!sz) 
-        throw std::logic_error("list is empty");
+        throw std::runtime_error("list is empty");
 
     ListNode<T>* node = dummy;
     while (node->next != last)
@@ -235,7 +234,7 @@ typename List<T>::iterator List<T>::find(T key) {
 template <typename T>
 T& List<T>::front() {
     if (!sz)
-        throw std::logic_error("list is empty");
+        throw std::runtime_error("list is empty");
     return dummy->next->data;
 }
 
@@ -243,7 +242,7 @@ T& List<T>::front() {
 template <typename T>
 T& List<T>::back() {
     if (!sz)
-        throw std::logic_error("list is empty");
+        throw std::runtime_error("list is empty");
     return last->data;
 }
 

@@ -20,8 +20,8 @@ public:
     explicit Vector(std::size_t size);
     Vector(std::size_t size, const T& value);
     Vector(const std::initializer_list<T>& values);
-    Vector(const Vector<T>& vec);
-    Vector(Vector<T>&& vec) noexcept;
+    Vector(const Vector& vec);
+    Vector(Vector&& vec) noexcept;
     ~Vector();
 
     void push_back(const T& value);
@@ -41,12 +41,12 @@ public:
     bool empty()            const  { return sz == 0; }
 
     void clear();
-    void swap(Vector<T>& vec) noexcept;
+    void swap(Vector& vec) noexcept;
 
     T&          operator[] (std::size_t index);
     const T&    operator[] (std::size_t index) const;
-    Vector<T>&  operator=  (const Vector<T>& rhs);
-    Vector<T>&  operator=  (Vector<T>&& rhs) noexcept;
+    Vector&  operator=  (const Vector& rhs);
+    Vector&  operator=  (Vector&& rhs) noexcept;
 
     iterator begin() { return iterator{data};      }
     iterator end()   { return iterator{data + sz}; }
@@ -212,7 +212,7 @@ typename Vector<T>::iterator Vector<T>::insert(iterator pos, const T& value){
 template <typename T>
 T& Vector<T>::front() {
     if (!sz)
-        throw std::logic_error("vector is empty");
+        throw std::runtime_error("vector is empty");
     return data[0];
 }
 
@@ -220,7 +220,7 @@ T& Vector<T>::front() {
 template <typename T>
 T& Vector<T>::back() {
     if (!sz)
-        throw std::logic_error("vector is empty");
+        throw std::runtime_error("vector is empty");
     return data[sz - 1];
 }
 
@@ -228,7 +228,7 @@ T& Vector<T>::back() {
 template <typename T>
 T& Vector<T>::at(std::size_t index) {
     if (!sz)
-        throw std::logic_error("vector is empty");
+        throw std::runtime_error("vector is empty");
     else if (index >= sz)
         throw std::invalid_argument("invalid index");
     return data[index];

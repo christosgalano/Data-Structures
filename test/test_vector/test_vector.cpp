@@ -65,13 +65,13 @@ TEST(Vector, removals) {
 }
 
 TEST(Vector, find) {
-  Vector<int> vector {1, 2, 3, 4, 5};
-  
-  Vector<int>::iterator found = vector.find(4);
-  EXPECT_EQ(*found,  4);
+    Vector<int> vector {1, 2, 3, 4, 5};
+    
+    Vector<int>::iterator found = vector.find(4);
+    EXPECT_EQ(*found,  4);
 
-  Vector<int>::iterator not_found = vector.find(0);
-  EXPECT_EQ(not_found, vector.end());
+    Vector<int>::iterator not_found = vector.find(0);
+    EXPECT_EQ(not_found, vector.end());
 }
 
 TEST(Vector, overloads) {
@@ -92,18 +92,18 @@ TEST(Vector, overloads) {
 }
 
 TEST(Vector, swap) {
-  Vector<int> vector_1 {1, 1, 1};
-  Vector<int> vector_2 {0, 0};
+    Vector<int> vector_1 {1, 1, 1};
+    Vector<int> vector_2 {0, 0};
 
-  vector_1.swap(vector_2);
-  
-  EXPECT_EQ(vector_2.size(), 3);
-  for (auto val : vector_2)
-    EXPECT_EQ(val, 1);
+    vector_1.swap(vector_2);
+    
+    EXPECT_EQ(vector_2.size(), 3);
+    for (auto val : vector_2)
+        EXPECT_EQ(val, 1);
 
-  EXPECT_EQ(vector_1.size(), 2);
-  for (auto val : vector_1)
-    EXPECT_EQ(val, 0);
+    EXPECT_EQ(vector_1.size(), 2);
+    for (auto val : vector_1)
+        EXPECT_EQ(val, 0);
 }
 
 int main(int argc, char** argv) {

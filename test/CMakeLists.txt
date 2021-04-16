@@ -1,2 +1,3 @@
 add_subdirectory(test_list)
 add_subdirectory(test_vector)
+add_subdirectory(test_pq)
