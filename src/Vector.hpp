@@ -6,15 +6,15 @@
 
 namespace cds {
 
-template <typename T> class Iterator;
-template <typename T> class Const_Iterator;
+template <typename T> class Vector_Iterator;
+template <typename T> class Const_Vector_Iterator;
 
 
 template <typename T>
 class Vector {
 public:
-    using iterator = Iterator<T>;
-    using const_iterator = Const_Iterator<T>;
+    using iterator = Vector_Iterator<T>;
+    using const_iterator = Const_Vector_Iterator<T>;
 
     Vector();
     explicit Vector(std::size_t size);
@@ -317,7 +317,7 @@ typename Vector<T>::iterator Vector<T>::find(const T& key) {
 
 
 template <typename T>
-class Iterator {
+class Vector_Iterator {
 private:
     T* data_ptr;
     friend class Vector<T>;
@@ -328,55 +328,55 @@ public:
     using pointer = value_type*;
     using reference = value_type&;
 
-    explicit Iterator() : data_ptr{} {}
-    explicit Iterator(T* in_ptr) : data_ptr{in_ptr} {}
+    explicit Vector_Iterator() : data_ptr{} {}
+    explicit Vector_Iterator(T* in_ptr) : data_ptr{in_ptr} {}
 
-    Iterator(const Iterator&) = default;
-    ~Iterator() = default;
+    Vector_Iterator(const Vector_Iterator&) = default;
+    ~Vector_Iterator() = default;
 
-    Iterator& operator++() {
+    Vector_Iterator& operator++() {
         ++data_ptr;
         return *this;
     }
 
-    Iterator operator++(int) {
-        Iterator temp{*this};
+    Vector_Iterator operator++(int) {
+        Vector_Iterator temp{*this};
         ++data_ptr;
         return temp;
     }
 
-    Iterator operator+(int d) {
+    Vector_Iterator operator+(int d) {
         data_ptr += d;
         return *this;
     }
 
-    Iterator& operator--() {
+    Vector_Iterator& operator--() {
         --data_ptr;
         return *this;
     }
 
-    Iterator operator--(int) {
-        Iterator temp{*this};
+    Vector_Iterator operator--(int) {
+        Vector_Iterator temp{*this};
         --data_ptr;
         return temp;
     }
 
-    Iterator operator-(int d) {
+    Vector_Iterator operator-(int d) {
         data_ptr -= d;
         return *this;
     }
 
-    bool operator==(const Iterator& rhs) const { return data_ptr == rhs.data_ptr; }
-    bool operator!=(const Iterator& rhs) const { return data_ptr != rhs.data_ptr; }
+    bool operator==(const Vector_Iterator& rhs) const { return data_ptr == rhs.data_ptr; }
+    bool operator!=(const Vector_Iterator& rhs) const { return data_ptr != rhs.data_ptr; }
 
     reference operator*() const { return *data_ptr; }
 
-    void swap(Iterator& other) { std::swap(data_ptr, other.data_ptr); }
+    void swap(Vector_Iterator& other) { std::swap(data_ptr, other.data_ptr); }
 };
 
 
 template <typename T>
-class Const_Iterator {
+class Const_Vector_Iterator {
 private:
     T* data_ptr;
     friend class Vector<T>;
@@ -387,46 +387,46 @@ public:
     using pointer = value_type*;
     using reference = value_type&;
 
-    explicit Const_Iterator() : data_ptr{} {}
-    explicit Const_Iterator(T* in_ptr) : data_ptr{in_ptr} {}
+    explicit Const_Vector_Iterator() : data_ptr{} {}
+    explicit Const_Vector_Iterator(T* in_ptr) : data_ptr{in_ptr} {}
 
-    Const_Iterator(const Const_Iterator&) = default;
-    ~Const_Iterator() = default;
+    Const_Vector_Iterator(const Const_Vector_Iterator&) = default;
+    ~Const_Vector_Iterator() = default;
 
-    Const_Iterator& operator++() {
+    Const_Vector_Iterator& operator++() {
         ++data_ptr;
         return *this;
     }
 
-    Const_Iterator operator++(int) {
-        Const_Iterator temp{*this};
+    Const_Vector_Iterator operator++(int) {
+        Const_Vector_Iterator temp{*this};
         ++data_ptr;
         return temp;
     }
 
-    Const_Iterator operator+(int d) {
+    Const_Vector_Iterator operator+(int d) {
         data_ptr += d;
         return *this;
     }
 
-    Const_Iterator& operator--() {
+    Const_Vector_Iterator& operator--() {
         --data_ptr;
         return *this;
     }
 
-    Const_Iterator operator--(int) {
-        Const_Iterator temp{*this};
+    Const_Vector_Iterator operator--(int) {
+        Const_Vector_Iterator temp{*this};
         --data_ptr;
         return temp;
     }
 
-    Const_Iterator operator-(int d) {
+    Const_Vector_Iterator operator-(int d) {
         data_ptr -= d;
         return *this;
     }
 
-    bool operator==(const Const_Iterator& rhs) const { return data_ptr == rhs.data_ptr; }
-    bool operator!=(const Const_Iterator& rhs) const { return data_ptr != rhs.data_ptr; }
+    bool operator==(const Const_Vector_Iterator& rhs) const { return data_ptr == rhs.data_ptr; }
+    bool operator!=(const Const_Vector_Iterator& rhs) const { return data_ptr != rhs.data_ptr; }
 
     reference operator*() const { return *data_ptr; }
 };

@@ -7,8 +7,8 @@
 namespace cds {
 
 template <typename T> class List;
-template <typename T> class Iterator;
-template <typename T> class Const_Iterator;
+template <typename T> class List_Iterator;
+template <typename T> class Const_List_Iterator;
 
 
 template <typename T>
@@ -17,8 +17,8 @@ class ListNode {
         T data;
         ListNode<T>* next;
         friend class List<T>;
-        friend class Iterator<T>;
-        friend class Const_Iterator<T>;
+        friend class List_Iterator<T>;
+        friend class Const_List_Iterator<T>;
     public:
         ListNode() : next{} {}
         ListNode(T in_data, ListNode<T>* in_next = nullptr)
@@ -29,8 +29,8 @@ class ListNode {
 template <typename T>
 class List {
 public:
-    using iterator = Iterator<T>;
-    using const_iterator = Const_Iterator<T>;
+    using iterator = List_Iterator<T>;
+    using const_iterator = Const_List_Iterator<T>;
 
     List();
     explicit List(const std::initializer_list<T>& values);
@@ -326,7 +326,7 @@ bool operator!=(const List<T>& lhs, const List<T>& rhs) {
 
 
 template <typename T>
-class Iterator {
+class List_Iterator {
 private:
     ListNode<T>* current;
     friend class List<T>;
@@ -337,24 +337,24 @@ public:
     using pointer = value_type*;
     using reference = value_type&;
 
-    explicit Iterator() : current{} {}
-    explicit Iterator(ListNode<T>* in_node) : current{in_node} {}
+    explicit List_Iterator() : current{} {}
+    explicit List_Iterator(ListNode<T>* in_node) : current{in_node} {}
 
-    Iterator& operator++() {
+    List_Iterator& operator++() {
         assert(current != nullptr && "out-of-bounds iterator increment!");
         current = current->next;
         return *this;
     }
     
-    Iterator operator++(int) {
+    List_Iterator operator++(int) {
         assert(current != nullptr && "out-of-bounds iterator increment!");
-        Iterator temp{*this};
+        List_Iterator temp{*this};
         current = current->next;
         return temp;
     }
 
-    bool operator == (const Iterator& rhs) const { return current == rhs.current; }
-    bool operator != (const Iterator& rhs) const { return current != rhs.current; }
+    bool operator == (const List_Iterator& rhs) const { return current == rhs.current; }
+    bool operator != (const List_Iterator& rhs) const { return current != rhs.current; }
 
     reference operator* () const {
         assert(current != nullptr && "invalid iterator dereference!");
@@ -366,12 +366,12 @@ public:
         return &current->data;
     }
 
-    void swap(Iterator& other) { std::swap(current, other.current); }
+    void swap(List_Iterator& other) { std::swap(current, other.current); }
 };
 
 
 template <typename T>
-class Const_Iterator {
+class Const_List_Iterator {
 private:
     ListNode<T>* current;
     friend class List<T>;
@@ -382,24 +382,24 @@ public:
     using pointer = value_type*;
     using reference = value_type&;
 
-    explicit Const_Iterator() : current{} {}
-    explicit Const_Iterator(ListNode<T>* in_node) : current{in_node} {}
+    explicit Const_List_Iterator() : current{} {}
+    explicit Const_List_Iterator(ListNode<T>* in_node) : current{in_node} {}
 
-    Const_Iterator& operator++() {
+    Const_List_Iterator& operator++() {
         assert(current != nullptr && "out-of-bounds iterator increment!");
         current = current->next;
         return *this;
     }
     
-    Const_Iterator operator++(int) {
+    Const_List_Iterator operator++(int) {
         assert(current != nullptr && "out-of-bounds iterator increment!");
-        Const_Iterator temp{*this};
+        Const_List_Iterator temp{*this};
         current = current->next;
         return temp;
     }
 
-    bool operator == (const Const_Iterator& rhs) const { return current == rhs.current; }
-    bool operator != (const Const_Iterator& rhs) const { return current != rhs.current; }
+    bool operator == (const Const_List_Iterator& rhs) const { return current == rhs.current; }
+    bool operator != (const Const_List_Iterator& rhs) const { return current != rhs.current; }
 
     reference operator*() const {
         assert(current != nullptr && "invalid iterator dereference!");
