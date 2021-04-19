@@ -40,11 +40,14 @@ public:
     std::size_t capacity()  const  { return cap;     }
     bool empty()            const  { return sz == 0; }
 
+    void resize(std::size_t size);
+    void reserve(std::size_t capacity);
+
     void clear();
     void swap(Vector& vec) noexcept;
 
-    T&          operator[] (std::size_t index);
-    const T&    operator[] (std::size_t index) const;
+    T&       operator[] (std::size_t index);
+    const T& operator[] (std::size_t index) const;
     Vector&  operator=  (const Vector& rhs);
     Vector&  operator=  (Vector&& rhs) noexcept;
 
@@ -72,7 +75,7 @@ Vector<T>::Vector()
 
 template <typename T>
 Vector<T>::Vector(std::size_t size)
-    : sz{size}, cap{ sz < min_cap ? min_cap : sz }
+    : sz{}, cap{ size < min_cap ? min_cap : size }
 {
     data = new T[cap];
 }
@@ -293,6 +296,27 @@ void Vector<T>::clear() {
 }
 
 
+template<typename T>
+void Vector<T>::resize(std::size_t size) {
+    if (size < sz)
+        sz = size;
+    else if (size > cap) {
+        cap = size;
+        T* old = data;
+        data = new T[cap];
+        std::copy(old, old + sz, data);
+        delete[] old;
+    }
+}
+
+
+template<typename T>
+void Vector<T>::reserve(std::size_t capacity) {
+    if (capacity > min_cap)
+        resize(capacity);
+}
+
+
 template <typename T>
 void Vector<T>::swap(Vector<T>& vec) noexcept {
     std::swap(sz,   vec.sz);
@@ -345,6 +369,11 @@ public:
         return temp;
     }
 
+    Vector_Iterator& operator+=(int d) {
+        data_ptr += d;
+        return *this;
+    }
+
     Vector_Iterator operator+(int d) {
         data_ptr += d;
         return *this;
@@ -361,6 +390,11 @@ public:
         return temp;
     }
 
+    Vector_Iterator& operator-=(int d) {
+        data_ptr -= d;
+        return *this;
+    }
+
     Vector_Iterator operator-(int d) {
         data_ptr -= d;
         return *this;
@@ -370,6 +404,8 @@ public:
     bool operator!=(const Vector_Iterator& rhs) const { return data_ptr != rhs.data_ptr; }
 
     reference operator*() const { return *data_ptr; }
+
+    pointer operator->()  const { return data_ptr;  }
 
     void swap(Vector_Iterator& other) { std::swap(data_ptr, other.data_ptr); }
 };
@@ -404,6 +440,11 @@ public:
         return temp;
     }
 
+    Const_Vector_Iterator& operator+=(int d) {
+        data_ptr += d;
+        return *this;
+    }
+
     Const_Vector_Iterator operator+(int d) {
         data_ptr += d;
         return *this;
@@ -420,6 +461,11 @@ public:
         return temp;
     }
 
+    Const_Vector_Iterator& operator-=(int d) {
+        data_ptr -= d;
+        return *this;
+    }
+    
     Const_Vector_Iterator operator-(int d) {
         data_ptr -= d;
         return *this;
@@ -429,6 +475,8 @@ public:
     bool operator!=(const Const_Vector_Iterator& rhs) const { return data_ptr != rhs.data_ptr; }
 
     reference operator*() const { return *data_ptr; }
+
+    pointer operator->()  const { return data_ptr;  }
 };
 
 }
