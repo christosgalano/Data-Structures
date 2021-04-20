@@ -56,6 +56,21 @@ TEST(PriorityQueue, removals) {
         EXPECT_EQ(pq.top(), val--);
         pq.pop();
     }
+
+    try {
+        pq.top();
+    }
+    catch (const std::runtime_error& e) {
+        std::string msg = e.what();
+        EXPECT_TRUE(msg == "pq is empty");
+    }
+    try {
+        pq.pop();
+    }
+    catch (const std::runtime_error& e) {
+        std::string msg = e.what();
+        EXPECT_TRUE(msg == "pq is empty");
+    }
 }
 
 TEST(PriorityQueue, overloads) {

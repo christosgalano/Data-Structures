@@ -64,6 +64,48 @@ TEST(List, removals) {
     EXPECT_EQ(list.size(), 0);
 }
 
+TEST(List, access) {
+    List<int> list;
+
+    list.push_back(10);
+    EXPECT_EQ(list.front(), 10);
+    EXPECT_EQ(list.at(0), 10);
+    EXPECT_EQ(list.back(), 10);
+
+    list.pop_back();
+    
+    try {
+        list.front();
+    }
+    catch (const std::runtime_error& e) {
+        std::string msg = e.what();
+        EXPECT_TRUE(msg == "list is empty");
+    }
+    try {
+        list.back();
+    }
+    catch (const std::runtime_error& e) {
+        std::string msg = e.what();
+        EXPECT_TRUE(msg == "list is empty");
+    }
+    try {
+        list.at(0);
+    }
+    catch (const std::runtime_error& e) {
+        std::string msg = e.what();
+        EXPECT_TRUE(msg == "list is empty");
+    }
+
+    list.push_back(10);
+    try {
+        list.remove(1);
+    }
+    catch (const std::invalid_argument& e) {
+        std::string msg = e.what();
+        EXPECT_TRUE(msg == "invalid index");
+    }
+}
+
 TEST(List, find) {
     List<int> list {1, 2, 3, 4, 5};
     

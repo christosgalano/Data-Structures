@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include "Vector.hpp"
 
+#include <iostream>
+
 using namespace cds;
 
 TEST(Vector, constructors) {
@@ -42,7 +44,7 @@ TEST(Vector, insertions) {
     EXPECT_EQ(vector.capacity(), 20);
 
     vector.insert(vector.begin(), 100);
-    EXPECT_EQ(vector.front(), 100);
+    EXPECT_EQ(vector[0], 100);
     EXPECT_EQ(vector.size(), 12);
     EXPECT_EQ(vector.capacity(), 20);
 }
@@ -51,17 +53,59 @@ TEST(Vector, removals) {
     Vector<int> vector {1, 2, 3, 4, 5};
     
     vector.pop_back();
-    EXPECT_EQ(vector.back(), 4);
+    EXPECT_EQ(vector[3], 4);
 
     EXPECT_EQ(vector.size(), 4);
 
     vector.erase(vector.begin());
-    EXPECT_EQ(vector.at(0), 2);
+    EXPECT_EQ(vector[0], 2);
     EXPECT_EQ(vector.size(), 3);
 
     vector.clear();
     EXPECT_EQ(vector.size(), 0);
     EXPECT_EQ(vector.capacity(), 10);
+}
+
+TEST(Vector, access) {
+    Vector<int> vector;
+
+    vector.push_back(10);
+    EXPECT_EQ(vector.front(), 10);
+    EXPECT_EQ(vector.at(0), 10);
+    EXPECT_EQ(vector.back(), 10);
+
+    vector.pop_back();
+    
+    try {
+        vector.front();
+    }
+    catch (const std::runtime_error& e) {
+        std::string msg = e.what();
+        EXPECT_TRUE(msg == "vector is empty");
+    }
+    try {
+        vector.back();
+    }
+    catch (const std::runtime_error& e) {
+        std::string msg = e.what();
+        EXPECT_TRUE(msg == "vector is empty");
+    }
+    try {
+        vector.at(0);
+    }
+    catch (const std::runtime_error& e) {
+        std::string msg = e.what();
+        EXPECT_TRUE(msg == "vector is empty");
+    }
+
+    vector.push_back(10);
+    try {
+        vector.at(1);
+    }
+    catch (const std::invalid_argument& e) {
+        std::string msg = e.what();
+        EXPECT_TRUE(msg == "invalid index");
+    }
 }
 
 TEST(Vector, find) {
@@ -127,9 +171,12 @@ TEST(Vector, resize) {
     EXPECT_EQ(vec_resize.size(), 10);
     EXPECT_EQ(vec_resize.capacity(), 25);
     
-    vec_resize.resize(70);
-    EXPECT_EQ(vec_resize.size(), 70);
-    EXPECT_EQ(vec_resize.capacity(), 70);    
+    vec_resize.resize(20, 100);
+    EXPECT_EQ(vec_resize.size(), 20);
+    EXPECT_EQ(vec_resize.capacity(), 25);
+    for (int i = 10; i < vec_resize.size(); ++i)
+        EXPECT_EQ(vec_resize[i], 100);
+
 }
 
 int main(int argc, char** argv) {
