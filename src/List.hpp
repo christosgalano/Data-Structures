@@ -173,8 +173,7 @@ void List<T>::insert(std::size_t index, const T& data) {
 
 template<typename T>
 void List<T>::pop_front() {
-    if (!sz)
-        throw std::runtime_error("list is empty");
+    if (!sz)  return;
 
     ListNode<T>* first = dummy->next;
     dummy->next = first->next;
@@ -188,8 +187,7 @@ void List<T>::pop_front() {
 
 template<typename T>
 void List<T>::pop_back() {
-    if (!sz) 
-        throw std::runtime_error("list is empty");
+    if (!sz)  return;
 
     ListNode<T>* node = dummy;
     while (node->next != last)
@@ -249,8 +247,11 @@ T& List<T>::back() {
 
 template <typename T>
 T& List<T>::at(std::size_t index) {
-    if (index >= sz)
-        throw std::invalid_argument("invalid index");        
+    if (!sz)
+        throw std::runtime_error("list is empty");
+    else if (index >= sz)
+        throw std::invalid_argument("invalid index");
+
     ListNode<T>* node = dummy->next;
     std::size_t t_index {};
     while (t_index++ != index)
