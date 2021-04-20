@@ -41,6 +41,8 @@ public:
     bool empty()            const  { return sz == 0; }
 
     void resize(std::size_t n);
+    void resize(std::size_t n, const T& val);
+
     void reserve(std::size_t n);
 
     void clear();
@@ -295,6 +297,7 @@ void Vector<T>::clear() {
     data = new T[cap];
 }
 
+
 // Resizes the container so that it contains n elements
 template<typename T>
 void Vector<T>::resize(std::size_t n) {
@@ -306,6 +309,30 @@ void Vector<T>::resize(std::size_t n) {
         data = new T[cap];
         std::copy(old, old + sz, data);
         delete[] old;
+    }
+    else {
+        std::size_t diff = n - sz;
+        for (std::size_t i = 0; i < diff; ++i)
+            push_back(T{});
+    }
+}
+
+
+template<typename T>
+void Vector<T>::resize(std::size_t n, const T& val) {
+    if (n < sz)
+        sz = n;
+    else if (n > cap) {
+        cap = sz = n;
+        T* old = data;
+        data = new T[cap];
+        std::copy(old, old + sz, data);
+        delete[] old;
+    }
+    else {
+        std::size_t diff = n - sz;
+        for (std::size_t i = 0; i < diff; ++i)
+            push_back(val);
     }
 }
 
