@@ -4,6 +4,7 @@
 #include <functional>
 #include <iterator>
 
+
 namespace cds {
 
 template <typename K, typename V, typename H> class Map_Iterator;
@@ -46,6 +47,7 @@ public:
     Map(const std::initializer_list<entry>& list);
     Map(const Map& vec);
     Map(Map&& vec) noexcept;
+    ~Map() = default;
 
     void insert(const K& key, const V& value);
     void remove(const K& key);
@@ -96,7 +98,12 @@ Map<K,V,H>::Map(const std::initializer_list<entry>& list)
     
 template <typename K, typename V, typename H>
 Map<K,V,H>::Map(const Map& map) 
-    : sz{map.sz}, cap{map.cap}, hash_function{H()}, array{map.array} {}
+    : sz{map.sz}, cap{map.cap}, hash_function{H()}, array{map.array}
+{    
+    // We set each inner vector equal to the corresponding map's inner vector (the Vector implementation default constructs upon creation)
+    for (int i = 0; i < map.array.capacity(); ++i)
+        array[i] = map.array[i];
+}
 
 template <typename K, typename V, typename H>
 Map<K,V,H>::Map(Map&& map) noexcept
@@ -109,7 +116,17 @@ template <typename K, typename V, typename H>
 void Map<K,V,H>::swap(Map& rhs) noexcept {
     std::swap(sz, rhs.sz);
     std::swap(cap, rhs.cap);
-    array.swap(rhs.array);
+
+    // We need also to swap the contents of the inner vectors
+    Map temp {*this};
+
+    array = rhs.array;
+    for (int i = 0; i < array.capacity(); ++i)
+        array[i] = std::move(rhs.array[i]);
+
+    rhs.array = temp.array;
+    for (int i = 0; i < rhs.array.capacity(); ++i)
+        rhs.array[i] = std::move(temp.array[i]);
 }
 
 template <typename K, typename V, typename H>
@@ -123,8 +140,10 @@ V& Map<K,V,H>::get_value(const K& key) {
 
 template <typename K, typename V, typename H>
 void Map<K,V,H>::rehash() {
-    Vector<Vector<entry>> old_array {std::move(array)};
- 
+    Vector<Vector<entry>> old_array{array};
+    for (int i = 0; i < old_array.capacity(); ++i)
+        old_array[i] = std::move(array[i]);
+
     std::size_t old_cap = cap;
     int prime_no = sizeof(prime_sizes) / sizeof(int);
     for (int i = 0; i < prime_no; ++i) {
@@ -136,14 +155,15 @@ void Map<K,V,H>::rehash() {
  
     if (cap == old_cap)
         cap *= 2;
-    array.resize(cap);
  
+    array.reserve(cap);
+
     sz = 0;
-    for (auto& vec : old_array) {
-        if (vec.size()) {
-            for (auto& p : vec)
+    for (int i = 0; i < old_array.capacity(); ++i) {
+        if (old_array[i].size()) {
+            for (auto& p : old_array[i])
                 insert(p.first, p.second);
-            vec.clear();
+            old_array[i].clear();
         }
     }
     old_array.clear();
@@ -176,7 +196,7 @@ template <typename K, typename V, typename H>
 void Map<K,V,H>::remove(const K& key) {
     unsigned pos = hash_function(key) % cap;
     if (array[pos].empty()) 
-        return;
+        throw std::runtime_error("no such key in the map");
     
     for (auto iter = array[pos].begin(); iter != array[pos].end(); ++iter) {
         if (iter->first == key) {
@@ -190,12 +210,13 @@ void Map<K,V,H>::remove(const K& key) {
 template <typename K, typename V, typename H>
 void Map<K,V,H>::clear() {
     array.clear();
+    sz = 0;
 }
 
+// If the key exists in the map we return the value it maps to, otherwise 
+// we create a new entry that maps the given key to a default value V.
 template <typename K, typename V, typename H>
 V& Map<K,V,H>::operator[](const K& key) {
-    // If the key exists in the map we return the value it maps to, otherwise 
-    // we create a new entry that maps the given key to a default value V.
     try {
         return get_value(key);  
     }
@@ -232,6 +253,29 @@ Map<K,V,H>& Map<K,V,H>::operator=(Map&& rhs) noexcept {
 }
 
 template <typename K, typename V, typename H>
+bool operator==(const Map<K,V,H>& lhs, const Map<K,V,H>& rhs) {
+    if (lhs.size() != rhs.size())
+        return false;
+
+    auto lhs_iter {lhs.cbegin()};
+    auto rhs_iter {rhs.cbegin()};
+
+    while (lhs_iter != lhs.cend()) {
+        if ( (lhs_iter->first != rhs_iter->first) || (lhs_iter->second != rhs_iter->second) )
+            return false; 
+        ++lhs_iter;
+        ++rhs_iter;
+    }   
+    return true;    
+}
+
+
+template <typename K, typename V, typename H>
+bool operator!=(const Map<K,V,H>& lhs, const Map<K,V,H>& rhs) {
+    return !(lhs == rhs);
+}
+
+template <typename K, typename V, typename H>
 typename Map<K,V,H>::iterator Map<K,V,H>::find(K key) {
     for (iterator iter = begin(); iter != end(); ++iter)
         if (iter->first == key)
@@ -256,8 +300,7 @@ inline typename Map<K,V,H>::const_iterator Map<K,V,H>::cbegin() const {
 
 template <typename K, typename V, typename H>
 inline typename Map<K,V,H>::const_iterator Map<K,V,H>::cend() const {
-    auto last_pos = std::next(array.begin(), sz);
-    return iterator{this, last_pos, last_pos->end()};    
+    return const_iterator{this, cap-1, array[cap-1].cend()};
 }
 
 
@@ -316,8 +359,10 @@ public:
 
         if (flag)
             in_iter = map->array[out_pos].begin();
-        else 
+        else {
+            out_pos = map->cap - 1;
             in_iter  = map->array[out_pos].end();
+        }
     }
 
     Map_Iterator(Map<K,V,H>* in_map, std::size_t in_out_pos, vec_iter in_in_iter)
@@ -369,13 +414,13 @@ private:
     // Helping function
     void shift() {
         while (true) {
-            if (++in_iter != map->array[out_pos].end())
+            if (++in_iter != map->array[out_pos].cend())
                 return;
 
             bool flag = false;
             while (++out_pos < map->cap) {
                 if (map->array[out_pos].size()) {
-                    in_iter = map->array[out_pos].begin();
+                    in_iter = map->array[out_pos].cbegin();
                     flag = true;
                     return;
                 }
@@ -385,7 +430,7 @@ private:
         }
 
         out_pos = map->cap - 1;
-        in_iter = map->array[out_pos].end();
+        in_iter = map->array[out_pos].cend();
     }
 
 public:
@@ -411,11 +456,13 @@ public:
 
         if (flag)
             in_iter = map->array[out_pos].cbegin();
-        else 
+        else {
+            out_pos = map->cap - 1;
             in_iter  = map->array[out_pos].cend();
+        }
     }
 
-    Const_Map_Iterator(Map<K,V,H>* in_map, std::size_t in_out_pos, vec_iter in_in_iter)
+    Const_Map_Iterator(const Map<K,V,H>* in_map, std::size_t in_out_pos, vec_iter in_in_iter)
         : map{in_map}, out_pos{in_out_pos}, in_iter{in_in_iter} {}
     
     reference operator*() {
