@@ -106,6 +106,32 @@ TEST(Vector, swap) {
         EXPECT_EQ(val, 0);
 }
 
+TEST(Vector, reserve) {
+    Vector<int> vec_reserve;
+
+    vec_reserve.reserve(53);
+    EXPECT_EQ(vec_reserve.size(), 0);
+    EXPECT_EQ(vec_reserve.capacity(), 53);
+   
+    vec_reserve.reserve(10);
+    EXPECT_EQ(vec_reserve.size(), 0);
+    EXPECT_EQ(vec_reserve.capacity(), 53);
+}
+
+TEST(Vector, resize) {
+    Vector<int> vec_resize(25);
+    EXPECT_EQ(vec_resize.size(), 25);
+    EXPECT_EQ(vec_resize.capacity(), 25);
+
+    vec_resize.resize(10);
+    EXPECT_EQ(vec_resize.size(), 10);
+    EXPECT_EQ(vec_resize.capacity(), 25);
+    
+    vec_resize.resize(70);
+    EXPECT_EQ(vec_resize.size(), 70);
+    EXPECT_EQ(vec_resize.capacity(), 70);    
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
