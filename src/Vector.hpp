@@ -40,8 +40,8 @@ public:
     std::size_t capacity()  const  { return cap;     }
     bool empty()            const  { return sz == 0; }
 
-    void resize(std::size_t size);
-    void reserve(std::size_t capacity);
+    void resize(std::size_t n);
+    void reserve(std::size_t n);
 
     void clear();
     void swap(Vector& vec) noexcept;
@@ -75,7 +75,7 @@ Vector<T>::Vector()
 
 template <typename T>
 Vector<T>::Vector(std::size_t size)
-    : sz{}, cap{ size < min_cap ? min_cap : size }
+    : sz{size}, cap{ size < min_cap ? min_cap : size }
 {
     data = new T[cap];
 }
@@ -102,7 +102,7 @@ Vector<T>::Vector(const std::initializer_list<T>& values)
 
 
 template <typename T>
-Vector<T>::Vector(const Vector<T>& vec) 
+Vector<T>::Vector(const Vector& vec) 
     : sz{vec.sz}, cap{vec.cap}
 {
     data = new T[cap];
@@ -111,7 +111,7 @@ Vector<T>::Vector(const Vector<T>& vec)
 
 
 template <typename T>
-Vector<T>::Vector(Vector<T>&& vec) noexcept
+Vector<T>::Vector(Vector&& vec) noexcept
     : data{}, sz{}, cap{min_cap}
 {
     vec.swap(*this);
@@ -254,15 +254,15 @@ const T& Vector<T>::operator[] (std::size_t index) const {
 
 // Because self assignment happens so rarely we don't check that this != &rhs
 template <typename T>
-Vector<T>& Vector<T>::operator=(const Vector<T>& rhs) {
-    Vector<T> temp{rhs};    // Exceptions may occur at this state so we create a temp vector and then swap it with *this
+Vector<T>& Vector<T>::operator=(const Vector& rhs) {
+    Vector temp{rhs};    // Exceptions may occur at this state so we create a temp vector and then swap it with *this
     temp.swap(*this);    
     return *this;
 }
 
 
 template <typename T>
-Vector<T>& Vector<T>::operator=(Vector<T>&& rhs) noexcept {
+Vector<T>& Vector<T>::operator=(Vector&& rhs) noexcept {
     rhs.swap(*this);
     return *this;
 }
@@ -295,13 +295,13 @@ void Vector<T>::clear() {
     data = new T[cap];
 }
 
-
+// Resizes the container so that it contains n elements
 template<typename T>
-void Vector<T>::resize(std::size_t size) {
-    if (size < sz)
-        sz = size;
-    else if (size > cap) {
-        cap = size;
+void Vector<T>::resize(std::size_t n) {
+    if (n < sz)
+        sz = n;
+    else if (n > cap) {
+        cap = sz = n;
         T* old = data;
         data = new T[cap];
         std::copy(old, old + sz, data);
@@ -310,10 +310,16 @@ void Vector<T>::resize(std::size_t size) {
 }
 
 
+// Requests that the vector capacity be at least enough to contain n elements
 template<typename T>
-void Vector<T>::reserve(std::size_t capacity) {
-    if (capacity > min_cap)
-        resize(capacity);
+void Vector<T>::reserve(std::size_t n) {
+    if (n > cap) {
+        cap = n;
+        T* old = data;
+        data = new T[cap];
+        std::copy(old, old + sz, data);
+        delete[] old;
+    }
 }
 
 
