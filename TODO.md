@@ -5,7 +5,7 @@
 
 ### In Progress
 
-- [ ] Implement test_map
+- [ ]
 
 
 ### Done ✓
@@ -16,3 +16,4 @@
 - [x] Add test_pq
 - [x] Test Vector::resize, Vector::reserve
 - [x] Add constructors and overloads at Map.hpp
+- [x] Implement test_map
