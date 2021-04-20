@@ -4,7 +4,6 @@
 #include <functional>
 #include <iterator>
 
-
 namespace cds {
 
 template <typename K, typename V, typename H> class Map_Iterator;
@@ -35,41 +34,8 @@ private:
     H hash_function;
     Vector<Vector<entry>> array;
 
-    void rehash() {
-        Vector<Vector<entry>> old_array {std::move(array)};
-
-        std::size_t old_cap = cap;
-        int prime_no = sizeof(prime_sizes) / sizeof(int);
-        for (int i = 0; i < prime_no; ++i) {
-            if (prime_sizes[i] > old_cap) {
-                cap = prime_sizes[i];
-                break;
-            }
-        }
-
-        if (cap == old_cap)
-            cap *= 2;
-
-        array.resize(cap);
-
-        sz = 0;
-        for (auto& vec : old_array) {
-            if (vec.size()) {
-                for (auto& p : vec)
-                    insert(p.first, p.second);
-            }
-            vec.clear();
-        }
-        old_array.clear();
-    }
-
-    V& get_value(const K& key) {
-        unsigned pos = hash_function(key) % cap;
-        for (auto& p : array[pos])
-            if (p.first == key)
-                return p.second;
-        throw std::runtime_error("");
-    }
+    void rehash();
+    V& get_value(const K& key);
 
 public:
     using iterator = Map_Iterator<K,V,H>;
@@ -78,16 +44,22 @@ public:
     Map();
     Map(H in_hash);
     Map(const std::initializer_list<entry>& list);
+    Map(const Map& vec);
+    Map(Map&& vec) noexcept;
 
     void insert(const K& key, const V& value);
     void remove(const K& key);
-
-    V& operator[](const K& key);
 
     std::size_t size() const { return sz;      }
     bool empty()       const { return sz == 0; }
 
     void clear();
+    void swap(Map& rhs) noexcept;
+
+    V& operator[](const K& key);
+    const V& operator[](const K& key) const;
+    Map&  operator=(const Map& rhs);
+    Map&  operator=(Map&& rhs) noexcept;
 
     iterator find(K key);
 
@@ -121,6 +93,62 @@ Map<K,V,H>::Map(const std::initializer_list<entry>& list)
     for (auto& e : list)
         insert(e.first, e.second);
 }
+    
+template <typename K, typename V, typename H>
+Map<K,V,H>::Map(const Map& map) 
+    : sz{map.sz}, cap{map.cap}, hash_function{H()}, array{map.array} {}
+
+template <typename K, typename V, typename H>
+Map<K,V,H>::Map(Map&& map) noexcept
+    : hash_function{H()}
+{
+    map.swap(*this);
+} 
+
+template <typename K, typename V, typename H>
+void Map<K,V,H>::swap(Map& rhs) noexcept {
+    std::swap(sz, rhs.sz);
+    std::swap(cap, rhs.cap);
+    array.swap(rhs.array);
+}
+
+template <typename K, typename V, typename H>
+V& Map<K,V,H>::get_value(const K& key) {
+    unsigned pos = hash_function(key) % cap;
+    for (auto& p : array[pos])
+        if (p.first == key)
+            return p.second;
+    throw std::runtime_error("");
+}
+
+template <typename K, typename V, typename H>
+void Map<K,V,H>::rehash() {
+    Vector<Vector<entry>> old_array {std::move(array)};
+ 
+    std::size_t old_cap = cap;
+    int prime_no = sizeof(prime_sizes) / sizeof(int);
+    for (int i = 0; i < prime_no; ++i) {
+        if (prime_sizes[i] > old_cap) {
+            cap = prime_sizes[i];
+            break;
+        }
+    }
+ 
+    if (cap == old_cap)
+        cap *= 2;
+    array.resize(cap);
+ 
+    sz = 0;
+    for (auto& vec : old_array) {
+        if (vec.size()) {
+            for (auto& p : vec)
+                insert(p.first, p.second);
+            vec.clear();
+        }
+    }
+    old_array.clear();
+}
+    
 
 template <typename K, typename V, typename H>
 void Map<K,V,H>::insert(const K& key, const V& value) {
@@ -140,7 +168,7 @@ void Map<K,V,H>::insert(const K& key, const V& value) {
     }
 
     double load_factor = static_cast<double>(sz) / cap;
-    if (load_factor > max_load_factor)
+    if (load_factor >= max_load_factor)
         rehash();
 } 
 
@@ -178,6 +206,32 @@ V& Map<K,V,H>::operator[](const K& key) {
 }
 
 template <typename K, typename V, typename H>
+const V& Map<K,V,H>::operator[](const K& key) const
+{
+    try {
+        return get_value(key);  
+    }
+    catch (std::runtime_error& e) {
+        insert(key, V{});
+        return get_value(key);
+    }    
+}
+
+// Because self assignment happens so rarely we don't check that this != &rhs
+template <typename K, typename V, typename H>
+Map<K,V,H>& Map<K,V,H>::operator=(const Map& rhs) {
+    Map temp{rhs};
+    temp.swap(*this);
+    return *this;
+}
+
+template <typename K, typename V, typename H>
+Map<K,V,H>& Map<K,V,H>::operator=(Map&& rhs) noexcept {
+    rhs.swap(*this);
+    return *this;
+}
+
+template <typename K, typename V, typename H>
 typename Map<K,V,H>::iterator Map<K,V,H>::find(K key) {
     for (iterator iter = begin(); iter != end(); ++iter)
         if (iter->first == key)
@@ -210,8 +264,7 @@ inline typename Map<K,V,H>::const_iterator Map<K,V,H>::cend() const {
 template <typename K, typename V, typename H>
 class Map_Iterator {
 private:
-    using node = std::pair<K,V>;
-    using vec_iter = typename Vector<node>::iterator;
+    using vec_iter = typename Vector<std::pair<K,V>>::iterator;
 
     Map<K,V,H>* map;
     std::size_t out_pos;    // used to iterate through the outer Vector
@@ -306,8 +359,7 @@ public:
 template <typename K, typename V, typename H>
 class Const_Map_Iterator {
 private:
-    using node = std::pair<K,V>;
-    using vec_iter = typename Vector<node>::const_iterator;
+    using vec_iter = typename Vector<std::pair<K,V>>::const_iterator;
 
     const Map<K,V,H>* map;
     std::size_t out_pos;
