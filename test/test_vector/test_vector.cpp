@@ -1,8 +1,6 @@
 #include "gtest/gtest.h"
 #include "Vector.hpp"
 
-#include <iostream>
-
 using namespace cds;
 
 TEST(Vector, constructors) {
@@ -20,11 +18,11 @@ TEST(Vector, constructors) {
     for (int i = 0; i < 5; ++i)
         EXPECT_EQ(vector_fill[i], 1);
 
-    Vector<int> vector_initializer_list {1, 2, 3, 4, 5};
-    EXPECT_EQ(vector_initializer_list.size(), 5);
-    EXPECT_EQ(vector_initializer_list.capacity(), 10);
+    Vector<int> initializer_vector {1, 2, 3, 4, 5};
+    EXPECT_EQ(initializer_vector.size(), 5);
+    EXPECT_EQ(initializer_vector.capacity(), 10);
     for (int i = 0; i < 5; ++i)
-        EXPECT_EQ(vector_initializer_list[i], i+1);
+        EXPECT_EQ(initializer_vector[i], i+1);
 
     Vector<int> copy_vector(vector_fill);
     EXPECT_EQ(copy_vector.size(), 5);

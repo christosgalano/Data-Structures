@@ -4,18 +4,17 @@
 using namespace cds;
 
 TEST(List, constructors) {
-    List<int> list {1};
-    EXPECT_EQ(list.size(), 1);
-    EXPECT_EQ(list.empty(), false);
-
-    List<int> copy_list(list);
-    EXPECT_EQ(copy_list.size(), 1);
-    EXPECT_EQ(copy_list.empty(), false);
-    EXPECT_TRUE(list == copy_list);
+    List<int> default_list;
+    EXPECT_EQ(default_list.size(), 0);
+    EXPECT_EQ(default_list.empty(), true);
 
     List<int> initializer_list {1, 2, 3, 4, 5};
     EXPECT_EQ(initializer_list.size(), 5);
     EXPECT_EQ(initializer_list.empty(), false);
+
+    List<int> copy_list(initializer_list);
+    EXPECT_EQ(copy_list.size(), 5);
+    EXPECT_TRUE(copy_list == initializer_list);
     
     List<int> move_list(std::move(initializer_list));
     EXPECT_EQ(move_list.size(), 5);

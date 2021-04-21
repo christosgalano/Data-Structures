@@ -22,17 +22,17 @@ TEST(PriorityQueue, constructors) {
     EXPECT_EQ(pq_with_custom_comparator.size(), 4);
     EXPECT_EQ(pq_with_custom_comparator.top(), 1);
 
-    PriorityQueue<int, std::greater<int>> pq_initializer_list{1, 2, 3, 4};
-    EXPECT_EQ(pq_initializer_list.size(), 4);
-    EXPECT_EQ(pq_initializer_list.top(), 1);
+    PriorityQueue<int, std::greater<int>> initializer_pq{1, 2, 3, 4};
+    EXPECT_EQ(initializer_pq.size(), 4);
+    EXPECT_EQ(initializer_pq.top(), 1);
 
-    PriorityQueue<int, std::greater<int>> copy_pq(pq_initializer_list);
-    EXPECT_TRUE(copy_pq == pq_initializer_list);
+    PriorityQueue<int, std::greater<int>> copy_pq(initializer_pq);
+    EXPECT_TRUE(copy_pq == initializer_pq);
 
-    PriorityQueue<int, std::greater<int>> move_pq(std::move(pq_initializer_list));
+    PriorityQueue<int, std::greater<int>> move_pq(std::move(initializer_pq));
     EXPECT_EQ(move_pq.size(), 4);
     EXPECT_EQ(move_pq.top(), 1);
-    EXPECT_EQ(pq_initializer_list.empty(), true);
+    EXPECT_EQ(initializer_pq.empty(), true);
 }
 
 TEST(PriorityQueue, insertions) {
