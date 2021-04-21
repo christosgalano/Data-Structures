@@ -20,14 +20,13 @@ private:
     void efficient_heapify();
 
 public:
-    // Constructors - we always use a dummy element at position 0 of the vector so the indexes arithmetic is simpler
     PriorityQueue();
-    PriorityQueue(C in_comparator);
-    PriorityQueue(Vector<T>& vec);
+    explicit PriorityQueue(C in_comparator);
+    explicit PriorityQueue(Vector<T>& vec);
     PriorityQueue(Vector<T>& vec, C in_comparator);
     PriorityQueue(Vector<T>&& vec);
     PriorityQueue(Vector<T>&& vec, C in_comparator);
-    PriorityQueue(const std::initializer_list<T>& values);
+    explicit PriorityQueue(const std::initializer_list<T>& values);
     PriorityQueue(const std::initializer_list<T>& values, C in_comparator);
     PriorityQueue(const PriorityQueue& pq);
     PriorityQueue(PriorityQueue&& pq) noexcept;

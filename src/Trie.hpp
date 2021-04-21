@@ -7,7 +7,7 @@ namespace cds {
 class Trie {
 public:
 	Trie();
-	Trie(const std::initializer_list<std::string>& words);
+	explicit Trie(const std::initializer_list<std::string>& words);
 	~Trie();
 	
 	void insert(const std::string& word);
@@ -22,7 +22,6 @@ private:
 	struct TrieNode;
 
 	TrieNode* root;
-
 	std::size_t sz;
 
 	TrieNode* get_TrieNode(const std::string& word);

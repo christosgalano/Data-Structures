@@ -13,38 +13,13 @@ template <typename K, typename V, typename H> class Const_Map_Iterator;
 
 template <typename K, typename V, typename H = std::hash<K>>
 class Map {
-private:
-    using entry = std::pair<K,V>;
-    
-    friend class Map_Iterator<K,V,H>;
-    friend class Const_Map_Iterator<K,V,H>;
-
-    static constexpr int prime_sizes[] = { 
-        53, 97, 193, 389, 769, 1543, 3079, 6151, 12289,
-        24593, 49157, 98317, 196613, 393241,
-        786433, 1572869, 3145739, 6291469, 12582917,
-        25165843, 50331653, 100663319, 201326611,
-        402653189, 805306457, 1610612741
-    };
-
-    static constexpr double max_load_factor {0.9};
-
-    std::size_t sz {};
-    std::size_t cap {prime_sizes[0]};
-
-    H hash_function;
-    Vector<Vector<entry>> array;
-
-    void rehash();
-    V& get_value(const K& key);
-
 public:
     using iterator = Map_Iterator<K,V,H>;
     using const_iterator = Const_Map_Iterator<K,V,H>;
 
     Map();
-    Map(H in_hash);
-    Map(const std::initializer_list<entry>& list);
+    explicit Map(H in_hash);
+    explicit Map(const std::initializer_list<std::pair<K,V>>& list);
     Map(const Map& vec);
     Map(Map&& vec) noexcept;
     ~Map() = default;
@@ -70,6 +45,29 @@ public:
 
     const_iterator cbegin() const;
     const_iterator cend() const;
+
+private: 
+    friend class Map_Iterator<K,V,H>;
+    friend class Const_Map_Iterator<K,V,H>;
+
+    static constexpr int prime_sizes[] = { 
+        53, 97, 193, 389, 769, 1543, 3079, 6151, 12289,
+        24593, 49157, 98317, 196613, 393241,
+        786433, 1572869, 3145739, 6291469, 12582917,
+        25165843, 50331653, 100663319, 201326611,
+        402653189, 805306457, 1610612741
+    };
+
+    static constexpr double max_load_factor {0.9};
+
+    std::size_t sz {};
+    std::size_t cap {prime_sizes[0]};
+
+    H hash_function;
+    Vector<Vector<std::pair<K,V>>> array;
+
+    void rehash();
+    V& get_value(const K& key);
 };
 
 
@@ -88,7 +86,7 @@ Map<K,V,H>::Map(H in_hash)
 }
 
 template <typename K, typename V, typename H>
-Map<K,V,H>::Map(const std::initializer_list<entry>& list)
+Map<K,V,H>::Map(const std::initializer_list<std::pair<K,V>>& list)
     : hash_function{H()}
 {
     array.reserve(cap);
@@ -140,7 +138,7 @@ V& Map<K,V,H>::get_value(const K& key) {
 
 template <typename K, typename V, typename H>
 void Map<K,V,H>::rehash() {
-    Vector<Vector<entry>> old_array{array};
+    Vector<Vector<std::pair<K,V>>> old_array{array};
     for (int i = 0; i < old_array.capacity(); ++i)
         old_array[i] = std::move(array[i]);
 
@@ -214,7 +212,7 @@ void Map<K,V,H>::clear() {
 }
 
 // If the key exists in the map we return the value it maps to, otherwise 
-// we create a new entry that maps the given key to a default value V.
+// we create a new std::pair<K,V> that maps the given key to a default value V.
 template <typename K, typename V, typename H>
 V& Map<K,V,H>::operator[](const K& key) {
     try {

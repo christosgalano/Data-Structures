@@ -19,7 +19,7 @@ public:
     Vector();
     explicit Vector(std::size_t size);
     Vector(std::size_t size, const T& value);
-    Vector(const std::initializer_list<T>& values);
+    explicit Vector(const std::initializer_list<T>& values);
     Vector(const Vector& vec);
     Vector(Vector&& vec) noexcept;
     ~Vector();
