@@ -49,6 +49,7 @@ struct Trie::TrieNode {
 Trie::Trie() 
 	: root{new TrieNode{'\0'}}, sz{} {}
 	
+
 Trie::Trie(const std::initializer_list<std::string>& words) 
 	: root{new TrieNode{'\0'}}, sz{}
 {
@@ -56,10 +57,12 @@ Trie::Trie(const std::initializer_list<std::string>& words)
 		insert(w);		
 }
 
+
 Trie::~Trie() {
 	destroy(root);
 	sz = 0;
 }
+
 
 Trie::TrieNode* Trie::get_TrieNode(const std::string& word) {
 	TrieNode* current = root;
@@ -71,12 +74,14 @@ Trie::TrieNode* Trie::get_TrieNode(const std::string& word) {
 	return current;		
 }
 
+
 void Trie::destroy(TrieNode* node) {
 	for (TrieNode* n : node->children)
 		if (n) 
 			destroy(n);
 	delete node;
 }
+
 
 Trie::TrieNode* Trie::p_remove(TrieNode* node, const std::string& word, int depth = 0) {
     if (!node)
@@ -114,6 +119,7 @@ Trie::TrieNode* Trie::p_remove(TrieNode* node, const std::string& word, int dept
     return node;	
 }
 
+
 void Trie::insert(const std::string& word) {
 	if (search(word))  // To ensure the same word did not already exist in the Trie
 		return;
@@ -129,16 +135,19 @@ void Trie::insert(const std::string& word) {
 	++sz;
 }
 
+
 void Trie::remove(const std::string& word) {
 	if (!search(word))
 		return;
 	p_remove(root, word);
 }
 
+
 bool Trie::search(const std::string& word) {
 	TrieNode* n = get_TrieNode(word);
 	return n != nullptr && n->isWord;
 }
+
 
 bool Trie::starts_with(const std::string& word) {
 	TrieNode* n = get_TrieNode(word);

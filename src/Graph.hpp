@@ -42,16 +42,19 @@ Graph<T>::Graph(const std::initializer_list<T>& list) {
         add_vertex(val);
 }
 
+
 template <typename T>
 bool Graph<T>::validate(const T& v1, const T& v2) {
     return ( vertices.find(v1) == vertices.end() || vertices.find(v2) == vertices.end() ) ? false : true;
 }
+
 
 template <typename T>
 void Graph<T>::add_vertex(const T& value) {
     vertices[value] = Vertex{value};
     ++no_vertices;
 }
+
 
 template <typename T>
 void Graph<T>::remove_vertex(const T& value) {
@@ -84,6 +87,7 @@ void Graph<T>::add_edge(const T& v1, const T& v2, unsigned weight) {
         no_edges += 2;
 }
 
+
 template <typename T>
 void Graph<T>::remove_edge(const T& v1, const T& v2) {
     if (!validate(v1, v2))
@@ -97,6 +101,7 @@ void Graph<T>::remove_edge(const T& v1, const T& v2) {
     no_edges -= 2;
 }
 
+
 template <typename T>
 void Graph<T>::change_weight(const T& v1, const T& v2, unsigned new_weight) {
     if (!validate(v1, v2))
@@ -109,6 +114,7 @@ void Graph<T>::change_weight(const T& v1, const T& v2, unsigned new_weight) {
     vertices[v2].change_weight(v1, new_weight);
 }
 
+
 template <typename T>
 unsigned Graph<T>::get_weight(const T& v1, const T& v2) {    
     if (!validate(v1, v2))
@@ -120,6 +126,7 @@ unsigned Graph<T>::get_weight(const T& v1, const T& v2) {
     return vertices[v1].get_weight(vertices[v2]);
 }
 
+
 template <typename T>
 Vector<T> Graph<T>::get_vertices() {
     Vector<T> to_return;
@@ -127,6 +134,7 @@ Vector<T> Graph<T>::get_vertices() {
         to_return.push_back(v.first);        
     return to_return;
 }
+
 
 template <typename T>
 Vector<T> Graph<T>::get_neighboors(const T& vertex) {

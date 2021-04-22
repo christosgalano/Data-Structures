@@ -75,12 +75,14 @@ Map<K,V,H>::Map()
     array.reserve(cap);
 }
 
+
 template <typename K, typename V, typename H>
 Map<K,V,H>::Map(H in_hash)
     : hash_function{in_hash()}
 {
     array.reserve(cap);
 }
+
 
 template <typename K, typename V, typename H>
 Map<K,V,H>::Map(const std::initializer_list<std::pair<K,V>>& list)
@@ -90,7 +92,8 @@ Map<K,V,H>::Map(const std::initializer_list<std::pair<K,V>>& list)
     for (auto& e : list)
         insert(e.first, e.second);
 }
-    
+
+
 template <typename K, typename V, typename H>
 Map<K,V,H>::Map(const Map& map) 
     : sz{map.sz}, cap{map.cap}, hash_function{H()}, array{map.array}
@@ -100,12 +103,14 @@ Map<K,V,H>::Map(const Map& map)
         array[i] = map.array[i];
 }
 
+
 template <typename K, typename V, typename H>
 Map<K,V,H>::Map(Map&& map) noexcept
     : hash_function{H()}
 {
     map.swap(*this);
 } 
+
 
 template <typename K, typename V, typename H>
 void Map<K,V,H>::swap(Map& rhs) noexcept {
@@ -124,6 +129,7 @@ void Map<K,V,H>::swap(Map& rhs) noexcept {
         rhs.array[i] = std::move(temp.array[i]);
 }
 
+
 template <typename K, typename V, typename H>
 V& Map<K,V,H>::get_value(const K& key) {
     unsigned pos = hash_function(key) % cap;
@@ -132,6 +138,7 @@ V& Map<K,V,H>::get_value(const K& key) {
             return p.second;
     throw std::runtime_error("");
 }
+
 
 template <typename K, typename V, typename H>
 void Map<K,V,H>::rehash() {
@@ -187,6 +194,7 @@ void Map<K,V,H>::insert(const K& key, const V& value) {
         rehash();
 } 
 
+
 template <typename K, typename V, typename H>
 void Map<K,V,H>::remove(const K& key) {
     unsigned pos = hash_function(key) % cap;
@@ -202,11 +210,13 @@ void Map<K,V,H>::remove(const K& key) {
     }
 }
 
+
 template <typename K, typename V, typename H>
 void Map<K,V,H>::clear() {
     array.clear();
     sz = 0;
 }
+
 
 // If the key exists in the map we return the value it maps to, otherwise 
 // we create a new std::pair<K,V> that maps the given key to a default value V.
@@ -221,6 +231,7 @@ V& Map<K,V,H>::operator[](const K& key) {
     }
 }
 
+
 template <typename K, typename V, typename H>
 const V& Map<K,V,H>::operator[](const K& key) const
 {
@@ -233,6 +244,7 @@ const V& Map<K,V,H>::operator[](const K& key) const
     }    
 }
 
+
 // Because self assignment happens so rarely we don't check that this != &rhs
 template <typename K, typename V, typename H>
 Map<K,V,H>& Map<K,V,H>::operator=(const Map& rhs) {
@@ -241,11 +253,13 @@ Map<K,V,H>& Map<K,V,H>::operator=(const Map& rhs) {
     return *this;
 }
 
+
 template <typename K, typename V, typename H>
 Map<K,V,H>& Map<K,V,H>::operator=(Map&& rhs) noexcept {
     rhs.swap(*this);
     return *this;
 }
+
 
 template <typename K, typename V, typename H>
 bool operator==(const Map<K,V,H>& lhs, const Map<K,V,H>& rhs) {
@@ -264,10 +278,12 @@ bool operator==(const Map<K,V,H>& lhs, const Map<K,V,H>& rhs) {
     return true;    
 }
 
+
 template <typename K, typename V, typename H>
 bool operator!=(const Map<K,V,H>& lhs, const Map<K,V,H>& rhs) {
     return !(lhs == rhs);
 }
+
 
 template <typename K, typename V, typename H>
 typename Map<K,V,H>::iterator Map<K,V,H>::find(const K& key) {
@@ -277,20 +293,24 @@ typename Map<K,V,H>::iterator Map<K,V,H>::find(const K& key) {
     return end();
 }
 
+
 template <typename K, typename V, typename H>
 inline typename Map<K,V,H>::iterator Map<K,V,H>::begin() {
     return iterator{this};
 }
+   
     
 template <typename K, typename V, typename H>
 inline typename Map<K,V,H>::iterator Map<K,V,H>::end() {
     return iterator{this, cap-1, array[cap-1].end()};
 }
 
+
 template <typename K, typename V, typename H>
 inline typename Map<K,V,H>::const_iterator Map<K,V,H>::cbegin() const {
     return const_iterator{this};
 }
+
 
 template <typename K, typename V, typename H>
 inline typename Map<K,V,H>::const_iterator Map<K,V,H>::cend() const {

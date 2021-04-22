@@ -11,12 +11,8 @@ private:
     C comparator;
     std::size_t sz;
 
-    // heapify_up - heapify_down restore the heap property after an insertion - removal
     void heapify_up(std::size_t index);
-
     void heapify_down(std::size_t index);
-
-    // Restores the heap property in O(n)
     void efficient_heapify();
 
 public:
@@ -51,6 +47,7 @@ public:
 };
 
 
+// heapify_up - heapify_down restore the heap property after an insertion - removal
 template <typename T, typename C>
 void PriorityQueue<T,C>::heapify_up(std::size_t index) {
     if (index == 1)     // We reached the root
@@ -77,6 +74,8 @@ void PriorityQueue<T,C>::heapify_down(std::size_t index) {
     }
 }
 
+
+// Restores the heap property in O(n)
 template <typename T, typename C>
 void PriorityQueue<T,C>::efficient_heapify() {
     data.insert(data.begin(), T{});
@@ -98,12 +97,14 @@ template <typename T, typename C>
 PriorityQueue<T,C>::PriorityQueue(C in_comparator)
     : data(1, T{}), comparator{in_comparator}, sz{} {}    
 
+
 template <typename T, typename C>
 PriorityQueue<T,C>::PriorityQueue(Vector<T>& vec)
     : data{vec}, comparator{C()}, sz{vec.size()}
 {   
     efficient_heapify();
 }
+
 
 template <typename T, typename C>
 PriorityQueue<T,C>::PriorityQueue(Vector<T>& vec, C in_comparator)
@@ -112,12 +113,14 @@ PriorityQueue<T,C>::PriorityQueue(Vector<T>& vec, C in_comparator)
     efficient_heapify();
 }
 
+
 template <typename T, typename C>
 PriorityQueue<T,C>::PriorityQueue(Vector<T>&& vec)
     : data{std::forward<Vector<T>>(vec)}, comparator{C()}, sz{data.size()}
 {   
     efficient_heapify();
 }
+
 
 template <typename T, typename C>
 PriorityQueue<T,C>::PriorityQueue(Vector<T>&& vec, C in_comparator)
@@ -126,12 +129,14 @@ PriorityQueue<T,C>::PriorityQueue(Vector<T>&& vec, C in_comparator)
     efficient_heapify();
 }
 
+
 template <typename T, typename C>
 PriorityQueue<T,C>::PriorityQueue(const std::initializer_list<T>& values)
     : data{values}, comparator{C()}, sz{data.size()}
 {
     efficient_heapify();
 }
+
 
 template <typename T, typename C>
 PriorityQueue<T,C>::PriorityQueue(const std::initializer_list<T>& values, C in_comparator)
@@ -140,9 +145,11 @@ PriorityQueue<T,C>::PriorityQueue(const std::initializer_list<T>& values, C in_c
     efficient_heapify();
 }
 
+
 template <typename T, typename C>
 PriorityQueue<T,C>::PriorityQueue(const PriorityQueue<T,C>& pq) 
     : data{pq.data}, comparator{pq.comparator}, sz{pq.sz} {}
+
 
 template <typename T, typename C>
 PriorityQueue<T,C>::PriorityQueue(PriorityQueue<T,C>&& pq) noexcept 
@@ -151,11 +158,13 @@ PriorityQueue<T,C>::PriorityQueue(PriorityQueue<T,C>&& pq) noexcept
     pq.swap(*this);
 }
 
+
 template <typename T, typename C>
 void PriorityQueue<T,C>::insert(const T& value) {
     data.push_back(value);
     heapify_up(++sz);
 }
+
 
 template <typename T, typename C>
 void PriorityQueue<T,C>::insert(T&& value) {
@@ -163,12 +172,14 @@ void PriorityQueue<T,C>::insert(T&& value) {
     heapify_up(++sz);
 }
 
+
 template <typename T, typename C>
 T PriorityQueue<T,C>::top() {
     if (!sz)
         throw std::runtime_error("pq is empty");
     return data[1];
 }    
+
 
 template <typename T, typename C>
 void PriorityQueue<T,C>::pop() {
@@ -179,11 +190,13 @@ void PriorityQueue<T,C>::pop() {
     heapify_down(1);
 }
 
+
 template <typename T, typename C>
 void PriorityQueue<T,C>::clear() {
     data.clear();
     sz = 0;
 }
+
 
 template <typename T, typename C>
 void PriorityQueue<T,C>::swap(PriorityQueue<T,C>& pq) noexcept {
@@ -192,10 +205,12 @@ void PriorityQueue<T,C>::swap(PriorityQueue<T,C>& pq) noexcept {
     std::swap(sz, pq.sz);
 }
 
+
 template <typename T, typename C>
 void swap(PriorityQueue<T,C>& lhs, PriorityQueue<T,C>& rhs) {
     lhs.swap(rhs);
 }
+
 
 // Because self assignment happens so rarely we don't check that this != &rhs
 template <typename T, typename C>
@@ -205,11 +220,13 @@ PriorityQueue<T,C>& PriorityQueue<T,C>::operator=(const PriorityQueue<T,C>& rhs)
     return *this;    
 }
 
+
 template <typename T, typename C>
 PriorityQueue<T,C>& PriorityQueue<T,C>::operator=(PriorityQueue<T,C>&& rhs) noexcept {
     rhs.swap(*this);
     return *this;    
 }
+
 
 template <typename T, typename C>
 bool operator==(const PriorityQueue<T,C>& lhs, const PriorityQueue<T,C>& rhs) {
@@ -223,10 +240,10 @@ bool operator==(const PriorityQueue<T,C>& lhs, const PriorityQueue<T,C>& rhs) {
     return true;   
 }
 
+
 template <typename T, typename C>
 bool operator!=(const PriorityQueue<T,C>& lhs, const PriorityQueue<T,C>& rhs) {
     return !(lhs == rhs);
 }
-
 
 }

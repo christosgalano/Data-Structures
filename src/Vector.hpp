@@ -387,7 +387,7 @@ public:
     using pointer = value_type*;
     using reference = value_type&;
 
-    explicit Vector_Iterator() : data_ptr{} {}
+    Vector_Iterator() : data_ptr{} {}
     explicit Vector_Iterator(T* in_ptr) : data_ptr{in_ptr} {}
 
     Vector_Iterator(const Vector_Iterator&) = default;
@@ -458,7 +458,7 @@ public:
     using pointer = value_type*;
     using reference = value_type&;
 
-    explicit Const_Vector_Iterator() : data_ptr{} {}
+    Const_Vector_Iterator() : data_ptr{} {}
     explicit Const_Vector_Iterator(T* in_ptr) : data_ptr{in_ptr} {}
 
     Const_Vector_Iterator(const Const_Vector_Iterator&) = default;

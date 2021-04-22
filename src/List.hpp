@@ -16,13 +16,13 @@ template <typename T>
 class ListNode {
     private:
         T data;
-        ListNode<T>* next;
+        ListNode* next;
         friend class List<T>;
         friend class List_Iterator<T>;
         friend class Const_List_Iterator<T>;
     public:
         ListNode() : next{} {}
-        ListNode(T in_data, ListNode<T>* in_next = nullptr)
+        ListNode(T in_data, ListNode* in_next = nullptr)
             : data{in_data}, next{in_next} {}
 };
 
@@ -39,25 +39,15 @@ public:
     List(List&& list) noexcept;
     ~List();
 
-    // Insert node at the front
     void push_front(const T& data);
-
-    // Insert node at the back
     void push_back(const T& data);
 
-    // Insert an item at a given index. The first argument is the index of the value before which to insert (indexes start at 0)
-    void insert(std::size_t index, const T& data);
-
-    // Removes the first value of the list
     void pop_front();
-
-    // Removes the last value of the list
     void pop_back();
-    
-    // Remove the item at a given index. If the index is greater than the list's size the function throws an exception.
+
+    void insert(std::size_t index, const T& data);
     void remove(std::size_t index);
 
-    // Returns an iterator to the key's first occurrence in the list. If the key is not found the function returns iterator end().
     iterator find(T key);
 
     T& front();
@@ -121,7 +111,7 @@ List<T>::List(List<T>&& list) noexcept
     list.swap(*this);
 }
 
-// Destructor: delete all the nodes including the dummy node
+
 template <typename T>
 List<T>::~List() {
     clear();
@@ -145,13 +135,12 @@ template <typename T>
 void List<T>::push_back(const T& data) {
     ListNode<T>* new_node = new ListNode<T>{data};
     last->next = new_node;
-    
-    // Update size and last
     last = new_node;
     ++sz;   
 }
 
 
+// Insert an item at a given index. The first argument is the index of the value before which to insert (indexes start at 0)
 template<typename T>
 void List<T>::insert(std::size_t index, const T& data) {
     if (index >= sz)
@@ -289,9 +278,9 @@ void swap(List<T>& lhs, List<T>& rhs) noexcept {
 }
 
 
+// Because self assignment happens so rarely we don't check that this != &rhs
 template <typename T>
 List<T>&  List<T>::operator=(const List<T>& rhs) {
-    // Because self assignment happens so rarely we don't check that this != &rhs
     List<T> temp{rhs};  // Exceptions may occur at this state so we create a temp list and then swap it with *this
     temp.swap(*this);
     return *this;
@@ -339,7 +328,7 @@ public:
     using pointer = value_type*;
     using reference = value_type&;
 
-    explicit List_Iterator() : current{} {}
+    List_Iterator() : current{} {}
     explicit List_Iterator(ListNode<T>* in_node) : current{in_node} {}
 
     List_Iterator& operator++() {
@@ -384,7 +373,7 @@ public:
     using pointer = value_type*;
     using reference = value_type&;
 
-    explicit Const_List_Iterator() : current{} {}
+    Const_List_Iterator() : current{} {}
     explicit Const_List_Iterator(ListNode<T>* in_node) : current{in_node} {}
 
     Const_List_Iterator& operator++() {
