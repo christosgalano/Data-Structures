@@ -1,7 +1,9 @@
-#include <utility>
 #include <algorithm>
-#include <stdexcept>
+#include <cstddef>
 #include <initializer_list>
+#include <iterator>
+#include <stdexcept>
+#include <utility>
 
 
 namespace cds {
@@ -402,12 +404,12 @@ public:
         return temp;
     }
 
-    Vector_Iterator& operator+=(int d) {
+    Vector_Iterator& operator+=(const difference_type& d) {
         data_ptr += d;
         return *this;
     }
 
-    Vector_Iterator operator+(int d) {
+    Vector_Iterator operator+(const difference_type& d) {
         data_ptr += d;
         return *this;
     }
@@ -423,12 +425,12 @@ public:
         return temp;
     }
 
-    Vector_Iterator& operator-=(int d) {
+    Vector_Iterator& operator-=(const difference_type& d) {
         data_ptr -= d;
         return *this;
     }
 
-    Vector_Iterator operator-(int d) {
+    Vector_Iterator operator-(const difference_type& d) {
         data_ptr -= d;
         return *this;
     }
@@ -473,12 +475,12 @@ public:
         return temp;
     }
 
-    Const_Vector_Iterator& operator+=(int d) {
+    Const_Vector_Iterator& operator+=(const difference_type& d) {
         data_ptr += d;
         return *this;
     }
 
-    Const_Vector_Iterator operator+(int d) {
+    Const_Vector_Iterator operator+(const difference_type& d) {
         data_ptr += d;
         return *this;
     }
@@ -494,12 +496,12 @@ public:
         return temp;
     }
 
-    Const_Vector_Iterator& operator-=(int d) {
+    Const_Vector_Iterator& operator-=(const difference_type& d) {
         data_ptr -= d;
         return *this;
     }
     
-    Const_Vector_Iterator operator-(int d) {
+    Const_Vector_Iterator operator-(const difference_type& d) {
         data_ptr -= d;
         return *this;
     }

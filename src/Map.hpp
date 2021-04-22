@@ -1,8 +1,5 @@
 #include "Vector.hpp"
-#include <cassert>
-#include <stdexcept>
 #include <functional>
-#include <iterator>
 
 
 namespace cds {
@@ -38,7 +35,7 @@ public:
     Map&  operator=(const Map& rhs);
     Map&  operator=(Map&& rhs) noexcept;
 
-    iterator find(K key);
+    iterator find(const K& key);
 
     iterator begin();
     iterator end();
@@ -267,14 +264,13 @@ bool operator==(const Map<K,V,H>& lhs, const Map<K,V,H>& rhs) {
     return true;    
 }
 
-
 template <typename K, typename V, typename H>
 bool operator!=(const Map<K,V,H>& lhs, const Map<K,V,H>& rhs) {
     return !(lhs == rhs);
 }
 
 template <typename K, typename V, typename H>
-typename Map<K,V,H>::iterator Map<K,V,H>::find(K key) {
+typename Map<K,V,H>::iterator Map<K,V,H>::find(const K& key) {
     for (iterator iter = begin(); iter != end(); ++iter)
         if (iter->first == key)
             return iter;
