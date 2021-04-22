@@ -1,11 +1,6 @@
 ### Todo
 
-- [ ] Use Vector and Map class in Graph.hpp, Dictionary.hpp
-
-
-### In Progress
-
-- [ ] Add tests for all implementations
+- [ ] Add test_rbtree
 
 
 ### Done ✓
@@ -16,3 +11,4 @@
 - [x] Add test_pq
 - [x] Add test_map
 - [x] Add test_trie
+- [x] Add test_graph
