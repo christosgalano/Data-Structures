@@ -1,6 +1,6 @@
 ### Todo
 
-- [ ] Add test_rbtree
+- [ ] Implement BST and AVL
 
 
 ### Done ✓
