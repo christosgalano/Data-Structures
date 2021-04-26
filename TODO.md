@@ -1,6 +1,6 @@
 ### Todo
 
-- [ ] Implement BST and AVL
+- [ ] Implement AVL
 
 
 ### Done ✓
@@ -12,3 +12,4 @@
 - [x] Add test_map
 - [x] Add test_trie
 - [x] Add test_graph
+- [x] Add test_bst
