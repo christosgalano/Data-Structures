@@ -159,15 +159,15 @@ TreeNode<T>* BST<T>::p_find_previous(TreeNode<T>* node, TreeNode<T>* target) con
 // Returns target's next in order TreeNode in the subtree with root node or nullptr if target is the subtree's max. 
 template<typename T>
 TreeNode<T>* BST<T>::p_find_next(TreeNode<T>* node, TreeNode<T>* target) const {
-        if (node == target)    // If target is root of the subtree then its next will be the minimum value in the right subtree
-            return p_find_min(node->right);
-        else if (node->data < target->data)    // Target is in the right subtree so his next will there too
-            return p_find_next(node->right, target);
-        else {    // Target is in the left subtree so his next wiil either be there or it will be node itself
-		    TreeNode<T>* res = p_find_next(node->left, target);
-		    return res != nullptr ? res : node;
-        }
+    if (node == target)    // If target is root of the subtree then its next will be the minimum value in the right subtree
+        return p_find_min(node->right);
+    else if (node->data < target->data)    // Target is in the right subtree so his next will there too
+        return p_find_next(node->right, target);
+    else {    // Target is in the left subtree so his next wiil either be there or it will be node itself
+	    TreeNode<T>* res = p_find_next(node->left, target);
+	    return res != nullptr ? res : node;
     }
+}
 
 
 template<typename T>
