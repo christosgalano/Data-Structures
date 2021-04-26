@@ -13,17 +13,12 @@ template <typename T> class Const_List_Iterator;
 
 
 template <typename T>
-class ListNode {
-    private:
-        T data;
-        ListNode* next;
-        friend class List<T>;
-        friend class List_Iterator<T>;
-        friend class Const_List_Iterator<T>;
-    public:
-        ListNode() : next{} {}
-        ListNode(T in_data, ListNode* in_next = nullptr)
-            : data{in_data}, next{in_next} {}
+struct ListNode {
+    T data;
+    ListNode* next;
+    ListNode() : next{} {}
+    ListNode(T in_data, ListNode* in_next = nullptr)
+        : data{in_data}, next{in_next} {}
 };
 
 
