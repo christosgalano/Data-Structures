@@ -23,7 +23,7 @@ The script folder contains all the scripts that are needed to automatically buil
 >> ./build.sh --build_tests=ON
 
 # If you have already built the project and just want to make changes to the test files,
-# then simply run the following script in order the changes to take place
+# then simply run the following script in order for the changes to take place
 >> ./make.sh
 
 # Run all tests
