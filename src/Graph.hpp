@@ -5,16 +5,6 @@ namespace cds {
 
 template <typename T>
 class Graph {
-private:
-    class Vertex;
-    class Edge;
-
-    Map<T, Vertex> vertices;
-    std::size_t no_vertices {};
-    std::size_t no_edges    {};
-
-    bool validate(const T& v1, const T& v2);
-
 public:
     Graph() = default;
     Graph(const std::initializer_list<T>& list);
@@ -33,6 +23,16 @@ public:
 
     std::size_t get_no_vertices() const { return no_vertices; }
     std::size_t get_no_edges()    const { return no_edges;    }
+    
+private:
+    class Vertex;
+    class Edge;
+
+    Map<T, Vertex> vertices;
+    std::size_t no_vertices {};
+    std::size_t no_edges    {};
+
+    bool validate(const T& v1, const T& v2);
 };
 
 

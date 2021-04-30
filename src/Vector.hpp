@@ -44,7 +44,6 @@ public:
 
     void resize(std::size_t n);
     void resize(std::size_t n, const T& val);
-
     void reserve(std::size_t n);
 
     void clear();
@@ -57,6 +56,7 @@ public:
 
     iterator begin() { return iterator{data};      }
     iterator end()   { return iterator{data + sz}; }
+
     const_iterator cbegin() const { return const_iterator{data};      }
     const_iterator cend()   const { return const_iterator{data + sz}; }
 

@@ -6,15 +6,6 @@ namespace cds {
 
 template <typename T, typename C = std::less<T>>  // Default version is a MaxPriorityQueue
 class PriorityQueue {
-private:
-    Vector<T> data;
-    C comparator;
-    std::size_t sz;
-
-    void heapify_up(std::size_t index);
-    void heapify_down(std::size_t index);
-    void efficient_heapify();
-
 public:
     PriorityQueue();
     explicit PriorityQueue(C in_comparator);
@@ -44,6 +35,16 @@ public:
 
     std::size_t size() const { return sz;      }
     bool empty()       const { return sz == 0; }
+
+private:
+    Vector<T> data;
+    C comparator;
+    std::size_t sz;
+
+    void heapify_up(std::size_t index);
+    void heapify_down(std::size_t index);
+    void efficient_heapify();
+
 };
 
 

@@ -18,6 +18,7 @@ public:
 
 	std::size_t size() const { return sz; 	   }
 	bool empty()       const { return sz == 0; }
+	
 private:
 	struct TrieNode;
 
