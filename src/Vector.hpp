@@ -154,7 +154,7 @@ void Vector<T>::push_back(T&& value) {
 
         delete[] old;
     }        
-    data[sz++] = value;
+    data[sz++] = std::move(value);
 }
 
 
