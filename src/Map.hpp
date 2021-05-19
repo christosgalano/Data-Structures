@@ -73,6 +73,7 @@ Map<K,V,H>::Map()
     : hash_function{H()}
 {
     array.reserve(cap);
+    array.resize(cap);  // value-initialize the inner vectors
 }
 
 
@@ -81,6 +82,7 @@ Map<K,V,H>::Map(H in_hash)
     : hash_function{in_hash()}
 {
     array.reserve(cap);
+    array.resize(cap);
 }
 
 
@@ -89,6 +91,7 @@ Map<K,V,H>::Map(const std::initializer_list<std::pair<K,V>>& list)
     : hash_function{H()}
 {
     array.reserve(cap);
+    array.resize(cap);
     for (auto& e : list)
         insert(e.first, e.second);
 }
@@ -98,7 +101,6 @@ template <typename K, typename V, typename H>
 Map<K,V,H>::Map(const Map& map) 
     : sz{map.sz}, cap{map.cap}, hash_function{H()}, array{map.array}
 {    
-    // We set each inner vector equal to the corresponding map's inner vector (the Vector implementation default constructs upon creation)
     for (int i = 0; i < map.array.capacity(); ++i)
         array[i] = map.array[i];
 }
@@ -143,10 +145,8 @@ V& Map<K,V,H>::get_value(const K& key) {
 template <typename K, typename V, typename H>
 void Map<K,V,H>::rehash() {
     Vector<Vector<std::pair<K,V>>> old_array{array};
-    for (int i = 0; i < old_array.capacity(); ++i)
-        old_array[i] = std::move(array[i]);
 
-    std::size_t old_cap = cap;
+    std::size_t old_cap {cap};
     int prime_no = sizeof(prime_sizes) / sizeof(int);
     for (int i = 0; i < prime_no; ++i) {
         if (prime_sizes[i] > old_cap) {
@@ -158,15 +158,15 @@ void Map<K,V,H>::rehash() {
     if (cap == old_cap)
         cap *= 2;
  
+    array.clear();
     array.reserve(cap);
+    array.resize(cap);
 
     sz = 0;
-    for (int i = 0; i < old_array.capacity(); ++i) {
-        if (old_array[i].size()) {
-            for (auto& p : old_array[i])
-                insert(p.first, p.second);
-            old_array[i].clear();
-        }
+    for (std::size_t i = 0; i < old_array.size(); ++i) {
+        for (auto& p : old_array[i])
+            insert(p.first, p.second);
+        old_array[i].clear();
     }
     old_array.clear();
 }

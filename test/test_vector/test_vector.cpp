@@ -36,10 +36,16 @@ TEST(Vector, constructors) {
 
 TEST(Vector, insertions) {
     Vector<int> vector;
-    for (int i = 0; i < 11; ++i)
+    for (int i = 0; i < 5; ++i)
         vector.push_back(i);
+    EXPECT_EQ(vector.size(), 5);
+    EXPECT_EQ(vector.capacity(), 10);
+
+    for (int i = 0; i < 6; ++i)
+        vector.emplace_back(i);
     EXPECT_EQ(vector.size(), 11);
     EXPECT_EQ(vector.capacity(), 20);
+
 
     vector.insert(vector.begin(), 100);
     EXPECT_EQ(vector[0], 100);
