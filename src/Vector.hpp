@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <initializer_list>
 #include <iterator>
+#include <new>
 #include <stdexcept>
 #include <utility>
 
@@ -29,6 +30,9 @@ public:
     void push_back(const T& value);
     void push_back(T&& value);
     void pop_back();
+
+    template <typename ... Args>
+    T& emplace_back(Args&& ... args);
 
     iterator erase(iterator pos);
     iterator insert(iterator pos, const T& value);
@@ -66,6 +70,7 @@ private:
     std::size_t cap;
     static constexpr short min_cap {10};
     static constexpr short capacity_factor {2};
+    void p_realloc(std::size_t n);
 };
 
 
@@ -73,7 +78,7 @@ template <typename T>
 Vector<T>::Vector() 
     : sz{}, cap{min_cap}
 {
-    data = new T[cap];
+    data = (T*)::operator new(cap * sizeof(T));
 }
 
 
@@ -81,7 +86,7 @@ template <typename T>
 Vector<T>::Vector(std::size_t size)
     : sz{size}, cap{ size < min_cap ? min_cap : size }
 {
-    data = new T[cap];
+    data = (T*)::operator new(cap * sizeof(T));
 }
 
 
@@ -89,8 +94,9 @@ template <typename T>
 Vector<T>::Vector(std::size_t size, const T& value)
     : sz{size}, cap{ sz < min_cap ? min_cap : sz }
 {
-    data = new T[cap];
-    std::fill(data, data + sz, value);
+    data = (T*)::operator new(cap * sizeof(T));
+    for (std::size_t i = 0; i < sz; ++i)
+        new (&data[i]) T(value);
 }
 
 
@@ -98,10 +104,10 @@ template <typename T>
 Vector<T>::Vector(const std::initializer_list<T>& values)
     : sz{values.size()}, cap{ sz < min_cap ? min_cap : sz }
 {
-    data = new T[cap];
+    data = (T*)::operator new(cap * sizeof(T));
     std::size_t i {};
     for (auto v : values)
-        data[i++] = v;
+        new (&data[i++]) T(v);
 }
 
 
@@ -109,8 +115,9 @@ template <typename T>
 Vector<T>::Vector(const Vector& vec) 
     : sz{vec.sz}, cap{vec.cap}
 {
-    data = new T[cap];
-    std::copy(vec.data, vec.data + sz, data);
+    data = (T*)::operator new(cap * sizeof(T));
+    for (std::size_t i = 0; i < sz; ++i)
+        new (&data[i]) T(vec[i]);
 }
 
 
@@ -123,60 +130,87 @@ Vector<T>::Vector(Vector&& vec) noexcept
 
 
 template <typename T>
-Vector<T>::~Vector() { 
-    delete[] data; 
+Vector<T>::~Vector() {
+    clear();
+    ::operator delete(data, cap * sizeof(T));
+}
+
+
+template <typename T>
+void Vector<T>::p_realloc(std::size_t n) {
+    T* new_data = (T*)::operator new(n * sizeof(T));
+
+    std::size_t old_sz = sz;
+    if (n < sz)
+        sz = n;
+
+    for (std::size_t i = 0; i < sz; ++i) 
+        new (&new_data[i]) T(std::move(data[i]));
+
+    for (std::size_t i = 0; i < old_sz; ++i)
+        data[i].~T();
+
+    ::operator delete(data, cap * sizeof(T));
+    data = new_data;
+    cap = n;
 }
 
 
 template <typename T>
 void Vector<T>::push_back(const T& value) {
-    if (sz == cap) {
-        cap *= capacity_factor;
-
-        T* old = data;
-        data = new T[cap];
-        std::copy(old, old + sz, data);
-
-        delete[] old;
-    }        
-    data[sz++] = value;
+    if (sz >= cap)
+        p_realloc(cap * capacity_factor);
+    new (&data[sz]) T(value);
+    ++sz;
 }
 
 
 template <typename T>
 void Vector<T>::push_back(T&& value) {
-    if (sz == cap) {
-        cap *= capacity_factor;
-
-        T* old = data;
-        data = new T[cap];
-        std::copy(old, old + sz, data);
-
-        delete[] old;
-    }        
-    data[sz++] = std::move(value);
+    if (sz >= cap)
+        p_realloc(cap * capacity_factor);
+    new (&data[sz]) T(std::move(value));
+    ++sz;
 }
 
 
 template <typename T>
 void Vector<T>::pop_back() {
-    if (sz > 0)
+    if (sz > 0) {
         --sz;
+        data[sz].~T();
+    }
+}
+
+
+template<typename T>
+template<typename ... Args>
+T& Vector<T>::emplace_back(Args&& ... args) {
+    if (sz >= cap)
+        p_realloc(cap * capacity_factor);
+    new (&data[sz]) T(std::forward<Args>(args)...);
+    return data[sz++];
 }
 
 
 template<typename T>
 typename Vector<T>::iterator Vector<T>::erase(iterator pos) {
+    if (pos == end())
+        throw std::invalid_argument("invalid position");
+
     std::size_t i {};
 
     for (auto iter = begin(); iter != pos; ++iter, ++i);
     
     std::size_t index {i};
 
-    for (auto iter = pos + 1; iter != end(); ++iter, ++i) 
+    for (auto iter = pos + 1; iter != end(); ++iter, ++i)
         data[i] = data[i + 1];
 
-    if (index >= --sz)
+    --sz;
+    data[sz].~T();
+
+    if (index >= sz)
         index = 0;
 
     return iterator{data + index};
@@ -185,30 +219,41 @@ typename Vector<T>::iterator Vector<T>::erase(iterator pos) {
 
 template<typename T>
 typename Vector<T>::iterator Vector<T>::insert(iterator pos, const T& value){
-    std::size_t i = 0;
-    if (cap == sz) {
+    if (pos == end())
+        throw std::invalid_argument("invalid position");
+
+    if (sz >= cap) {
+        std::size_t i {};
         cap *= capacity_factor;
         
-        T* temp = new T[cap];
+        T* temp = (T*)::operator new(cap * sizeof(T));
+
         for (auto iter = begin(); iter != pos; ++iter, ++i)
-            temp[i] = data[i];
-        temp[i] = value;
+            new (&temp[i])  T(std::move(data[i]));
+        new (&temp[i]) T(value);
 
         std::size_t index {i++};
         
         for (std::size_t j = 0; j < sz - index; ++j, ++i)
-            temp[i] = data[i - 1];
+            new (&temp[i]) T(std::move(data[i - 1]));
 
-        delete[] data;
-        
+
+        for (std::size_t i = 0; i < sz; ++i)
+            data[i].~T();
+
+        ::operator delete(data, cap * sizeof(T));
         data = temp;
         ++sz;
 
         return iterator{data + index};
     }
-    
-    for(auto iter = end(); iter != pos; --iter, ++i)
-        data[sz - i] = data[sz - i - 1];
+
+    new (&data[sz]) T(std::move(data[sz - 1]));
+
+    std::size_t i {1};
+    for(auto iter = end() - 1; iter != pos; --iter, ++i)
+        data[sz - i] = std::move(data[sz - i - 1]);
+
     *pos = value;
     ++sz;
 
@@ -293,27 +338,24 @@ bool operator!=(const Vector<T>& lhs, const Vector<T>& rhs) {
 
 template <typename T>
 void Vector<T>::clear() {
-    delete[] data;
+    for (std::size_t i = 0; i < sz; ++i)
+        data[i].~T();
     sz = 0;
-    cap = min_cap;
-    data = new T[cap];
 }
 
 
 // Resizes the container so that it contains n elements
 template<typename T>
 void Vector<T>::resize(std::size_t n) {
-    if (n < sz)
+    if (n < sz) {
+        for (std::size_t i = n; i < sz; ++i)
+            data[i].~T();
         sz = n;
-    else if (n > cap) {
-        cap = sz = n;
-        T* old = data;
-        data = new T[cap];
-        std::copy(old, old + sz, data);
-        delete[] old;
     }
+    else if (n > cap)
+        p_realloc(n);
     else {
-        std::size_t diff = n - sz;
+        std::size_t diff {n - sz};
         for (std::size_t i = 0; i < diff; ++i)
             push_back(T{});
     }
@@ -322,17 +364,15 @@ void Vector<T>::resize(std::size_t n) {
 
 template<typename T>
 void Vector<T>::resize(std::size_t n, const T& val) {
-    if (n < sz)
+    if (n < sz) {
+        for (std::size_t i = n; i < sz; ++i)
+            data[i].~T();
         sz = n;
-    else if (n > cap) {
-        cap = sz = n;
-        T* old = data;
-        data = new T[cap];
-        std::copy(old, old + sz, data);
-        delete[] old;
     }
+    else if (n > cap)
+        p_realloc(n);
     else {
-        std::size_t diff = n - sz;
+        std::size_t diff {n - sz};
         for (std::size_t i = 0; i < diff; ++i)
             push_back(val);
     }
@@ -342,13 +382,8 @@ void Vector<T>::resize(std::size_t n, const T& val) {
 // Requests that the vector capacity be at least enough to contain n elements
 template<typename T>
 void Vector<T>::reserve(std::size_t n) {
-    if (n > cap) {
-        cap = n;
-        T* old = data;
-        data = new T[cap];
-        std::copy(old, old + sz, data);
-        delete[] old;
-    }
+    if (n > cap)
+        p_realloc(n);
 }
 
 
