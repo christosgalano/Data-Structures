@@ -3,7 +3,7 @@ project(DataStructures)
 
 option(BUILD_TEST "Build the unit tests" OFF)
 
-# we want to choice our own prefix to prevent naming issues
+# we want select our own prefix to prevent naming issues
 set(CMAKE_STATIC_LIBRARY_PREFIX "")
 
 set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
