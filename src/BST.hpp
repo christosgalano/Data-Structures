@@ -20,7 +20,22 @@ struct TreeNode {
     TreeNode(const T& in_data, TreeNode* in_left = nullptr, TreeNode* in_right = nullptr, TreeNode* in_parent = nullptr)
         : data{in_data}, left{in_left}, right{in_right}, parent{in_parent} {}
 
-    bool is_leaf() { return left == nullptr && right == nullptr; }
+    bool is_leaf() const { 
+        return left == nullptr && right == nullptr; 
+    }
+
+    bool has_one_child() const {
+        return (left && !right) || (!left && right);
+    }
+
+    bool operator==(const TreeNode& rhs) {
+        return data == rhs.data && left == rhs.left &&
+               right == rhs.right && parent == rhs.parent;
+    }
+
+    bool operator!=(const TreeNode& rhs) {
+        return !(*this == rhs);
+    }
 };
 
 
@@ -52,7 +67,7 @@ private:
     TreeNode<T>* root;
     std::size_t sz;
 
-    TreeNode<T>* p_insert(TreeNode<T>* node, const T& value);
+    TreeNode<T>* p_insert(TreeNode<T>* node, const T& value, bool& inserted);
     TreeNode<T>* p_search(TreeNode<T>* node, const T& value);
     TreeNode<T>* p_find_min(TreeNode<T>* node) const;
     TreeNode<T>* p_find_max(TreeNode<T>* node) const;
@@ -94,14 +109,18 @@ void BST<T>::p_destroy(TreeNode<T>* node) {
 
 template <typename T>
 void BST<T>::insert(const T& value) {
-    root = p_insert(root, value);
-    ++sz;
+    bool inserted {false};
+    root = p_insert(root, value, inserted);
+    if (inserted)
+        ++sz;
 }
 
 template <typename T>
-TreeNode<T>* BST<T>::p_insert(TreeNode<T>* node, const T& value) {
-    if (!node) 
+TreeNode<T>* BST<T>::p_insert(TreeNode<T>* node, const T& value, bool& inserted) {
+    if (!node) {
+        inserted = true;
         node = new TreeNode<T>{value};
+    }
     else if (node->data > value) {
         node->left = p_insert(node->left, value);
         node->left->parent = node;
@@ -116,7 +135,7 @@ TreeNode<T>* BST<T>::p_insert(TreeNode<T>* node, const T& value) {
 
 template<typename T>
 bool BST<T>::search(const T& value) {
-    return p_search(root, value) != nullptr ? true : false;
+    return p_search(root, value) != nullptr;
 }
 
 template<typename T>
@@ -172,7 +191,7 @@ TreeNode<T>* BST<T>::p_find_next(TreeNode<T>* node, TreeNode<T>* target) const {
 
 template<typename T>
 void BST<T>::remove(const T& value) {
-    bool removed;
+    bool removed {false};
     root = p_remove(root, value, removed);
     if (!removed)
         throw std::runtime_error("no such value in the BST");
@@ -181,44 +200,52 @@ void BST<T>::remove(const T& value) {
 
 template<typename T>
 TreeNode<T>* BST<T>::p_remove(TreeNode<T>* node, const T& value, bool& removed) {
-    if (!node) {
-        removed = false;
-        return nullptr;
-    }
+    if (!node)  return nullptr;
 
     if (node->data == value) {
         removed = true;    // Found value
 
+        // If node is a leaf just delete it
         if (node->is_leaf()) {
             delete node;
-            node = nullptr;
             return nullptr;
         }
 
-        if (!node->left) {    // No left subtree, so new root will be the right child
-            TreeNode<T>* temp {node->right};
-            temp->parent = node->parent;
+        // If node has one child, connect node's parent with the child and then delete node
+        else if (node->has_one_child()) {
+            TreeNode<T>* node_child = node->left != nullptr ? node->left : node->right;
+            node_child->parent = node->parent;
             delete node;
-            node = nullptr;
-            return temp;
+            return node_child;
         }
-        else if (!node->right) {    // No right subtree, so new root will be the left child
-            TreeNode<T>* temp {node->left};
-            temp->parent = node->parent;
-            delete node;
-            node = nullptr;
-            return temp;
-        }
-        else {
-            TreeNode<T>* min_right;
-			node->right = p_remove_min(node->right, &min_right);
 
-			min_right->left = node->left;
-			min_right->right = node->right;
-			min_right->parent = node->parent;
-			
-			delete node;
-			return min_right;
+        // If node has two children
+        else {
+
+            // Find its inorder predecessor - we know that previous will either have one left child or none,
+            // because if it had a right child then that node would be the previous.
+            TreeNode<T>* previous = p_find_max(node->left);  
+
+            // If previous is not the left child of node
+            if (previous != node->left) {  
+                previous->parent->right = previous->left;  // previous will be the right child otherwise it would not have been chosen
+                if (previous->left) {
+                    previous->left->parent = previous->parent;
+                }
+
+                previous->left = node->left;  // update previous left child
+                if (node->left) {
+                    node->left->parent = previous;
+                }
+            }
+
+            // Connect predecessor with right subtree and update the parent pointers
+            previous->right = node->right;
+            node->right->parent = previous;
+            previous->parent = node->parent;
+
+            delete node;
+            return previous;
         }
     }
     else if (node->data > value)
@@ -227,20 +254,6 @@ TreeNode<T>* BST<T>::p_remove(TreeNode<T>* node, const T& value, bool& removed) 
         node->right = p_remove(node->right, value, removed);
     
     return node;
-}
-
-template<typename T>
-TreeNode<T>* BST<T>::p_remove_min(TreeNode<T>* node, TreeNode<T>** min_node) {
-	if (!node->left) {    // No left subtree so node is the min_node
-		*min_node = node;
-        if (node->right)
-            node->right->parent = node->parent;
-		return node->right;		// new root is the right child
-	}
-    else {    // There is a left subtree so the min_node is there
-		node->left = p_remove_min(node->left, min_node);
-		return node;
-	} 
 }
 
 
