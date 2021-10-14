@@ -25,5 +25,7 @@ steps:
     ./build.sh --build_tests=ON
   displayName: 'Build the project'
 
-- script: ./run.sh
+- script: |
+    cd scripts
+    ./run.sh
   displayName: 'Run tests'
