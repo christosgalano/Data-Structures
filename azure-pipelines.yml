@@ -20,8 +20,8 @@ steps:
   displayName: 'Install cmake'
 
 - script: |
-  cd scripts
-  .\build --build_tests=ON
+    cd scripts
+    .\build --build_tests=ON
   displayName: 'Build the project'
 
 - script: .\run
