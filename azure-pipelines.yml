@@ -21,6 +21,7 @@ steps:
 
 - script: |
     cd scripts
+    sudo chmod +x build.sh make.sh clean.sh run.sh
     ./build.sh --build_tests=ON
   displayName: 'Build the project'
 
