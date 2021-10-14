@@ -156,7 +156,7 @@ TreeNode<T>* BST<T>::p_find_min(TreeNode<T>* node) const {
 
 template<typename T>
 TreeNode<T>* BST<T>::p_find_max(TreeNode<T>* node) const {
-    return node != nullptr && node->rightt != nullptr 
+    return node != nullptr && node->right != nullptr 
            ? p_find_max(node->right)
 		   : node;
 }
