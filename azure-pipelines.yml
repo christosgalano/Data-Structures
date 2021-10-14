@@ -1,0 +1,29 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- '*'
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: sudo apt-get update
+  displayName: 'Update'
+
+- script: sudo apt-get install g++
+  displayName: 'Install g++'
+
+- script: sudo apt-get install cmake
+  displayName: 'Install cmake'
+
+- script: |
+    cd scripts
+    sudo chmod +x build.sh make.sh clean.sh run.sh
+    ./build.sh --build_tests=ON
+  displayName: 'Build the project'
+
+- script: ./run.sh
+  displayName: 'Run tests'
