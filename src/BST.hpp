@@ -122,11 +122,11 @@ TreeNode<T>* BST<T>::p_insert(TreeNode<T>* node, const T& value, bool& inserted)
         node = new TreeNode<T>{value};
     }
     else if (node->data > value) {
-        node->left = p_insert(node->left, value);
+        node->left = p_insert(node->left, value, inserted);
         node->left->parent = node;
     }
     else if (node->data < value) {
-        node->right = p_insert(node->right, value);
+        node->right = p_insert(node->right, value, inserted);
         node->right->parent = node;
     }
     return node;
