@@ -26,7 +26,7 @@ TESTS="OFF"
 
 for i in "$@"
 do
-case $i in
+    case $i in
     --build_type=*)
         if [ $# -ne 0 ]; then
             CONFIG="${i#*=}"
