@@ -19,7 +19,9 @@ steps:
 - script: sudo apt-get install cmake
   displayName: 'Install cmake'
 
-- script: .\scripts\build --build_tests=ON
+- script: |
+  cd scripts
+  .\build --build_tests=ON
   displayName: 'Build the project'
 
 - script: .\run
