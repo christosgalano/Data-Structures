@@ -41,4 +41,6 @@ jobs:
         make install
         
     - name: Test
-      run: for test in ./dist/bin/${{env.BUILD_TYPE}}/*; do ./${test}; done
+      run: |
+        cd ${{env.TEST_BIN}}/${{env.BUILD_TYPE}}
+        for test in ./*; do ./${test}; done
