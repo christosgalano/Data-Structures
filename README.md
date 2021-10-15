@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/christosgalano/Data%20Structures/_apis/build/status/christosgalano.DataStructures?branchName=master)](https://dev.azure.com/christosgalano/Data%20Structures/_build/latest?definitionId=3&branchName=master)
+
 # Documentation
 
 This project provides a library of several data structures implementations and also tests that ensure their proper functionality.
