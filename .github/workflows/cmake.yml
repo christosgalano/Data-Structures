@@ -30,12 +30,13 @@ jobs:
     
     - name: Configure CMake
       run: |
-        mkdir -p ${{env.BUILD_DIR}}/${{env.BUILD_TYPE}}
-        cd ${{env.BUILD_DIR}}/${{env.BUILD_TYPE}}
-        cmake -DBUILD_TEST=${{env.BUIDL_TESTS}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{github.workspace}} || exit 1
+        cd ${{github.workspace}}
+        mkdir -p build/${{env.BUILD_TYPE}}
+        cd build/${{env.BUILD_TYPE}}
+        cmake -DBUILD_TEST=${{env.BUILD_TESTS}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{github.workspace}} || exit 1
 
     - name: Build
-      working-directory: ${{env.BUILD_DIR}}/${{env.BUILD_TYPE}}
+      working-directory: ${{github.workspace}}/build/${{env.BUILD_TYPE}}
       run: |
         make
         make install
