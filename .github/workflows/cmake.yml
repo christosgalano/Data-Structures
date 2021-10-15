@@ -32,7 +32,7 @@ jobs:
       run: |
         mkdir -p ${{env.BUILD_DIR}}/${{env.BUILD_TYPE}}
         cd ${{env.BUILD_DIR}}/${{env.BUILD_TYPE}}
-        cmake -DBUILD_TEST=${{env.BUIDL_TESTS}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake -DBUILD_TEST=${{env.BUIDL_TESTS}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ${{github.workspace}} || exit 1
 
     - name: Build
       working-directory: ${{env.BUILD_DIR}}/${{env.BUILD_TYPE}}
