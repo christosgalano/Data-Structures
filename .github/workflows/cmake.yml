@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 env:
-  BUILD_TYPE: Debug
+  BUILD_TYPE: debug
   BUILD_DIR: ${{github.workspace}}/build
   BUILD_TESTS: ON
   TEST_BIN: ${{github.workspace}}/dist/bin
