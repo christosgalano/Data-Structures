@@ -8,9 +8,9 @@ on:
 
 env:
   BUILD_TYPE: Debug
-  BUILD_DIR: ${{github.workspace}}/build/${{env.BUILD_TYPE}}
+  BUILD_DIR: ${{github.workspace}}/build
   BUILD_TESTS: ON
-  TEST_BIN: ${{github.workspace}}/dist/bin/${{env.BUILD_TYPE}}
+  TEST_BIN: ${{github.workspace}}/dist/bin
   
 jobs:
   build:
@@ -30,16 +30,16 @@ jobs:
     
     - name: Configure CMake
       run: |
-        mkdir -p ${{env.BUILD_DIR}}
-        cd ${{env.BUILD_DIR}}
+        mkdir -p ${{env.BUILD_DIR}}/${{env.BUILD_TYPE}}
+        cd ${{env.BUILD_DIR}}/${{env.BUILD_TYPE}}
         cmake -DBUILD_TEST=${{env.BUIDL_TESTS}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
-      working-directory: ${{env.BUILD_DIR}}
+      working-directory: ${{env.BUILD_DIR}}/${{env.BUILD_TYPE}}
       run: |
         make
         make install
         
     - name: Test
-      working-directory: ${{env.TEST_BIN}}
+      working-directory: ${{env.TEST_BIN}}/${{env.BUILD_TYPE}}
       run: for test in ./*; do ./${test}; done
