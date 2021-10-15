@@ -13,7 +13,7 @@ The tests are based on the GTest framework.
 >> sudo apt-get install g++
 ```
 
-## Build and Run
+## Build and Run Manually
 The script folder contains all the scripts that are needed to automatically build (and run) the project with cmake
 ``` bash
 >> cd scripts
