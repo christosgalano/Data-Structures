@@ -41,5 +41,4 @@ jobs:
         make install
         
     - name: Test
-      working-directory: ${{env.TEST_BIN}}/${{env.BUILD_TYPE}}
-      run: for test in ./*; do ./${test}; done
+      run: for test in ${{env.TEST_BIN}}/${{env.BUILD_TYPE}}/*; do ./${test}; done
