@@ -1,0 +1,45 @@
+name: CMake
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  BUILD_TYPE: Debug
+  BUILD_DIR: ${{github.workspace}}/build/${{env.BUILD_TYPE}}
+  BUILD_TESTS: ON
+  TEST_BIN: ${{github.workspace}}/dist/bin/${{env.BUILD_TYPE}}
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Update
+      run: sudo apt-get update  
+
+    - name: Install g++
+      run: sudo apt-get install g++ 
+    
+    - name: Install cmake
+      run: sudo apt-get install cmake 
+    
+    - name: Configure CMake
+      run: |
+        mkdir -p ${{env.BUILD_DIR}}
+        cd ${{env.BUILD_DIR}}
+        cmake -DBUILD_TEST=${{env.BUIDL_TESTS}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      working-directory: ${{env.BUILD_DIR}}
+      run: |
+        make
+        make install
+        
+    - name: Test
+      working-directory: ${{env.TEST_BIN}}
+      run: for test in ./*; do ./${test}; done
