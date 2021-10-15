@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/christosgalano/Data%20Structures/_apis/build/status/christosgalano.DataStructures?branchName=master)](https://dev.azure.com/christosgalano/Data%20Structures/_build/latest?definitionId=3&branchName=master)
+[![CMake](https://github.com/christosgalano/DataStructures/actions/workflows/cmake.yml/badge.svg?branch=master)](https://github.com/christosgalano/DataStructures/actions/workflows/cmake.yml)
 
 # Documentation
 
