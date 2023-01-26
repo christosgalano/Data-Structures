@@ -43,6 +43,12 @@ jobs:
           sarif_file: results/cpp.sarif
           category: cpp
 
+      - name: Upload sarif file as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: cpp.sarif
+          path: results/cpp.sarif
+
       - name: Run tests
         working-directory: ${{ env.build_dir }}
         run: |
