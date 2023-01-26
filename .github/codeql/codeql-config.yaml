@@ -1,4 +1,0 @@
-name: "C++ CodeQL config"
-
-paths:
-  - include
