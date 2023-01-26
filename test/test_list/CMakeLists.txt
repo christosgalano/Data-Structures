@@ -1,5 +1,5 @@
 include_directories(
-  ${SOURCE_DIR}
+  ${INCLUDE_DIR}
 )
 
 add_executable(test_list

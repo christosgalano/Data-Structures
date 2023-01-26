@@ -8,9 +8,10 @@ project(
   LANGUAGES CXX
 )
 
-set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
-set(INSTALL_BIN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/${CMAKE_BUILD_TYPE}")
-set(INSTALL_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dist/lib/${CMAKE_BUILD_TYPE}")
+SET(CMAKE_INSTALL_PREFIX ".")
+
+# Set directories
+set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(INSTALL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dist/include")
 
 # Set language standards
@@ -27,8 +28,15 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
   
-# Add source files
-add_subdirectory(src)
+# Create static library
+add_library(${PROJECT_NAME} INTERFACE)
+
+# Include header files
+# add_subdirectory(include)
+target_include_directories(${PROJECT_NAME} INTERFACE ${INCLUDE_DIR})
+
+# Install include directory
+# install(DIRECTORY ${INCLUDE_DIR}/ DESTINATION ${INSTALL_INCLUDE_DIR})
   
 # Enable testing - optional
 option(ENABLE_TESTING "Build unit tests" OFF)

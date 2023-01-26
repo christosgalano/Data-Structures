@@ -27,8 +27,9 @@ The script folder contains all the scripts that are needed to automatically buil
 >> cmake --build ./build  --config debug
 
 # Run tests
+>> cd ./build
 >> ctest -C debug
 
 # Cleanup
->> rm -rf build; rm -rf dist
+>> rm -rf build;
 ```
