@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "Data_Structures.hpp"
+#include "data_structures.hpp"
 
 using namespace data_structures;
 

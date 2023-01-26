@@ -12,7 +12,7 @@ SET(CMAKE_INSTALL_PREFIX ".")
 
 # Set directories
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
-set(INSTALL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dist/include")
+set(INSTALL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_BUILD_TYPE}/include")
 
 # Set language standards
 set(CMAKE_CXX_STANDARD 17)
@@ -35,7 +35,8 @@ add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE ${INCLUDE_DIR})
 
 # Install include directory
-# install(DIRECTORY ${INCLUDE_DIR}/ DESTINATION ${INSTALL_INCLUDE_DIR})
+include(GNUInstallDirs)
+install(DIRECTORY ${INCLUDE_DIR}/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
   
 # Enable testing - optional
 option(ENABLE_TESTING "Build unit tests" OFF)

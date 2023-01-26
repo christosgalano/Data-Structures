@@ -3,7 +3,7 @@
 
 /* The data_structures namespace.
  *
- * Data Structures implements a standard namespace containg various data structures.
+ * Data Structures implements a standard namespace containing various data structures.
  */
 #include "data_structures/BST.hpp"
 #include "data_structures/Map.hpp"
