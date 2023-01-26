@@ -1,6 +1,6 @@
 # Data-Structures
 
-[![CMake](https://github.com/christosgalano/DataStructures/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/christosgalano/DataStructures/actions/workflows/cmake.yaml)
+[![CMake](https://github.com/christosgalano/DataStructures/actions/workflows/cmake.yaml/badge.svg?branch=main)](https://github.com/christosgalano/DataStructures/actions/workflows/cmake.yaml)
 
 ## General
 
