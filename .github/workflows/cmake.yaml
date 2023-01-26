@@ -1,10 +1,10 @@
 name: cmake
 
 on:
-  # push:
-  #   branches: [main]
-  # pull_request:
-  #   branches: [main]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cmake -B ./build -DENABLE_TESTING=${{ vars.BUILD_TESTS }} -DCMAKE_BUILD_TYPE=${{ vars.BUILD_TYPE }}
+          cmake -B ./build -DENABLE_TESTING=ON -DCMAKE_BUILD_TYPE=${{ vars.BUILD_TYPE }}
 
       - name: Build
         run: |
@@ -32,7 +32,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     environment: development
-    if: ${{ vars.BUILD_TESTS == 'ON' }}
     needs: build
     steps:
       - name: Download build artifact
