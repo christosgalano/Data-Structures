@@ -1,0 +1,35 @@
+name: build-test-upload
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-test-upload:
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: |
+          cmake -B ./build -DENABLE_TESTING=ON -DCMAKE_BUILD_TYPE=${{ vars.BUILD_TYPE }}
+
+      - name: Build
+        run: |
+          cmake --build ./build --config ${{ vars.BUILD_TYPE }}
+
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: |
+          ctest -c ${{ vars.BUILD_TYPE }}
+
+      - name: Upload headers
+        uses: actions/upload-artifact@v3
+        with:
+          name: data-structures
+          path: include

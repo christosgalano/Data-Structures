@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.16)
 project(
   "DataStructures" 
   VERSION 1.0
-  DESCRIPTION "A header-only c++ library containing implementations of various data structures."
+  DESCRIPTION "A header-only C++ library containing implementations of various data structures."
   HOMEPAGE_URL "https://github.com/christosgalano/Data-Structures"
   LANGUAGES CXX
 )
@@ -32,7 +32,6 @@ FetchContent_MakeAvailable(googletest)
 add_library(${PROJECT_NAME} INTERFACE)
 
 # Include header files
-# add_subdirectory(include)
 target_include_directories(${PROJECT_NAME} INTERFACE ${INCLUDE_DIR})
 
 # Install include directory
