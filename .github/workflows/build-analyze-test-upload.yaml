@@ -35,7 +35,7 @@ jobs:
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2
         with:
-          output: ${{ github.workspace }}/results/cpp.sarif
+          output: ${{ github.workspace }}/results
 
       - name: Upload sarif file
         uses: github/codeql-action/upload-sarif@v2
