@@ -37,12 +37,6 @@ jobs:
         with:
           output: ${{ github.workspace }}/results
 
-      # - name: Upload sarif file
-      #   uses: github/codeql-action/upload-sarif@v2
-      #   with:
-      #     sarif_file: results/cpp.sarif
-      #     category: cpp
-
       - name: Upload sarif file as an artifact
         uses: actions/upload-artifact@v3
         with:
