@@ -8,13 +8,16 @@ on:
   workflow_dispatch:
 
 env:
-  build_dir: '${{ github.workspace }}/build' # path to the CMake build directory
+  build_dir: "${{ github.workspace }}/build" # path to the CMake build directory
   config: ${{ vars.BUILD_TYPE }}
 
 jobs:
   build-test-upload:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     environment: development
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -33,10 +36,10 @@ jobs:
         with:
           cmakeBuildDirectory: ${{ env.build_dir }}
           buildConfiguration: ${{ env.config }}
-          
+
           # Ruleset file that will determine what checks will be run
           ruleset: NativeRecommendedRules.ruleset
-          
+
           # Paths to ignore analysis of CMake targets and includes
           ignoredPaths: ${{ github.workspace }}/dependencies;${{ github.workspace }}/test
 
