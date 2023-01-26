@@ -1,4 +1,4 @@
-name: build-test-upload
+name: build-analyze-test-upload
 
 on:
   push:
@@ -12,7 +12,7 @@ env:
   config: ${{ vars.BUILD_TYPE }}
 
 jobs:
-  build-test-upload:
+  build-analyze-test-upload:
     runs-on: ubuntu-latest
     environment: development
     steps:
@@ -24,8 +24,8 @@ jobs:
         with:
           languages: cpp
           config-file: ./.github/codeql/codeql-config.yaml
-      
-      - name: Configure cmake
+
+      - name: Configure CMake
         run: |
           cmake -B ${{ env.build_dir }} -DENABLE_TESTING=ON -DCMAKE_BUILD_TYPE=${{ env.config }}
 
@@ -33,11 +33,17 @@ jobs:
         run: |
           cmake --build ${{ env.build_dir }} --config ${{ env.config }}
 
-      - name: Perform CodeQL Analysis
+      - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2
 
+      - name: Upload sarif file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: codeql-results-${{ github.run_number }}.sarif
+          category: cpp
+
       - name: Run tests
-        working-directory: ${{github.workspace}}/${{ env.build_dir }}
+        working-directory: ${{ env.build_dir }}
         run: |
           ctest -c ${{ env.config }}
 
