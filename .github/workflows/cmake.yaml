@@ -31,6 +31,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    environment: development
     if: ${{ vars.BUILD_TESTS == 'ON' }}
     needs: build
     steps:
