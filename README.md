@@ -1,6 +1,6 @@
 # Data-Structures
 
-[![CMake](https://github.com/christosgalano/DataStructures/actions/workflows/cmake.yml/badge.svg?branch=master)](https://github.com/christosgalano/DataStructures/actions/workflows/cmake.yml)
+[![CMake](https://github.com/christosgalano/DataStructures/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/christosgalano/DataStructures/actions/workflows/cmake.yaml)
 
 ## General
 
@@ -17,8 +17,6 @@ The tests are based on the GTest framework.
 ```
 
 ## Build and Run Manually
-
-The script folder contains all the scripts that are needed to automatically build (and run) the project with cmake
 
 ```bash
 # Build project with specific build type (debug/release) and testing (ON/OFF)
