@@ -1,12 +1,12 @@
+#pragma once
+
 #include "Vector.hpp"
 #include <functional>
 
-
-namespace cds {
+namespace data_structures {
 
 template <typename K, typename V, typename H> class Map_Iterator;
 template <typename K, typename V, typename H> class Const_Map_Iterator;
-
 
 template <typename K, typename V, typename H = std::hash<K>>
 class Map {

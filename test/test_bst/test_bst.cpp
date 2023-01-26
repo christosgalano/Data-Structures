@@ -1,8 +1,8 @@
-#include "gtest/gtest.h"
-#include "BST.hpp"
 #include <string>
+#include <gtest/gtest.h>
+#include "Data_Structures.hpp"
 
-using namespace cds;
+using namespace data_structures;
 
 TEST(BST, constructors){
     BST<int> default_bst;

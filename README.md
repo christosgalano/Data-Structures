@@ -1,11 +1,14 @@
+# Data-Structures
+
 [![CMake](https://github.com/christosgalano/DataStructures/actions/workflows/cmake.yml/badge.svg?branch=master)](https://github.com/christosgalano/DataStructures/actions/workflows/cmake.yml)
 
-# Documentation
+## General
 
 This project provides a library of several data structures implementations and also tests that ensure their proper functionality.
 The tests are based on the GTest framework.
 
 ## Setup
+
 ``` bash
 # Run these commands to install cmake and compiler (g++)
 >> sudo apt-get update
@@ -14,23 +17,18 @@ The tests are based on the GTest framework.
 ```
 
 ## Build and Run Manually
+
 The script folder contains all the scripts that are needed to automatically build (and run) the project with cmake
-``` bash
->> cd scripts
 
-# Build project with specified build type (default=debug)
->> ./build.sh --build_type=release --build_tests=ON
+```bash
+# Build project with specific build type (debug/release) and testing (ON/OFF)
+>> cmake -B ./build -DENABLE_TESTING=ON -DCMAKE_BUILD_TYPE=debug
 
-# Build project with testing ON, where the tests excectutables are installed in: dist/BUILD_TYPE/bin
->> ./build.sh --build_tests=ON
+>> cmake --build ./build  --config debug
 
-# If you have already built the project and just want to make changes to the test files,
-# then simply run the following script in order for the changes to take place
->> ./make.sh
+# Run tests
+>> ctest -C debug
 
-# Run all tests
->> ./run.sh
-
-# Remove all generated folders (build and dist)
->> ./clean.sh 
+# Cleanup
+>> rm -rf build; rm -rf dist
 ```

@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"
-#include "PriorityQueue.hpp"
+#include <gtest/gtest.h>
+#include "Data_Structures.hpp"
 
-using namespace cds;
+using namespace data_structures;
 
 TEST(PriorityQueue, constructors) {
     PriorityQueue<int> default_pq;
@@ -73,7 +73,7 @@ TEST(PriorityQueue, removals) {
     }
 }
 
-TEST(PriorityQueue, overloads) {
+TEST(PriorityQueue, overloadata_structures) {
     Vector<int> vec;
     for (int i = 0; i < 11; ++i)
         vec.push_back(i);

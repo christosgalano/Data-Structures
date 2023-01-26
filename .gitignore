@@ -1,4 +1,5 @@
-build
+# Directories
 dist
-externals/gtest
+build
 .vscode
+Testing

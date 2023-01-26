@@ -1,8 +1,8 @@
-#include "gtest/gtest.h"
-#include "Map.hpp"
 #include <string>
+#include <gtest/gtest.h>
+#include "Data_Structures.hpp"
 
-using namespace cds;
+using namespace data_structures;
 
 TEST(Map, constructors) {
     Map<int, std::string> default_map;
@@ -94,7 +94,7 @@ TEST(Map, find) {
     EXPECT_EQ(not_found, map.end());
 }
 
-TEST(Map, overloads) {
+TEST(Map, overloadata_structures) {
     Map<int, std::string> map;
     for (int i = 0; i < 11; ++i)
         map.insert(i, "A" + std::to_string(i));

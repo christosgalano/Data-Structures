@@ -1,8 +1,8 @@
-#include "gtest/gtest.h"
-#include "Graph.hpp"
 #include <string>
+#include <gtest/gtest.h>
+#include "Data_Structures.hpp"
 
-using namespace cds;
+using namespace data_structures;
 
 TEST(Graph, constructors) {
     Graph<int> default_graph;

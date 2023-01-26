@@ -1,8 +1,9 @@
+#pragma once
+
 #include "Vector.hpp"
 #include <functional>
 
-
-namespace cds {
+namespace data_structures {
 
 template <typename T, typename C = std::less<T>>  // Default version is a MaxPriorityQueue
 class PriorityQueue {

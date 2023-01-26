@@ -1,7 +1,8 @@
+#pragma once
+
 #include "Map.hpp"
 
-
-namespace cds {
+namespace data_structures {
 
 template <typename T>
 class Graph {
@@ -145,7 +146,7 @@ Vector<T> Graph<T>::get_neighboors(const T& vertex) {
     for (auto& v : vertices[vertex].get_neighboors())
         neighboors.push_back((v.get_dest()).get_data());
 
-    return neighboors;  // return a copy of the neighboors, the user is only allowed to modify the graph through its methods
+    return neighboors;  // return a copy of the neighboors, the user is only allowed to modify the graph through its methodata_structures
 }
 
 

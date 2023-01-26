@@ -1,0 +1,51 @@
+name: build-test-publish
+
+on:
+  # push:
+  #   branches: [main]
+  # pull_request:
+  #   branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: |
+          cmake -B ./build -DENABLE_TESTING=${{ vars.BUILD_TESTS }} -DCMAKE_BUILD_TYPE=${{ vars.BUILD_TYPE }}
+
+      - name: Build
+        run: |
+          cmake --build ./build --config ${{ vars.BUILD_TYPE }}
+          cd ./build
+          make && make install
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ds-build
+          path: build
+
+  test:
+    runs-on: ubuntu-latest
+    if: ${{ vars.BUILD_TESTS == 'ON' }}
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ds-build
+          path: ${{ github.workspace }}/build
+
+      - name: Run tests
+        run: |
+          cd ./build
+          ctest -c ${{ vars.BUILD_TYPE }}

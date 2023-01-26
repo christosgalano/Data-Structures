@@ -1,16 +1,16 @@
+#pragma once
+
 #include <cassert>
 #include <cstddef>
 #include <initializer_list>
 #include <stdexcept>
 #include <utility>
 
-
-namespace cds {
+namespace data_structures {
 
 template <typename T> class List;
 template <typename T> class List_Iterator;
 template <typename T> class Const_List_Iterator;
-
 
 template <typename T>
 struct ListNode {
@@ -20,7 +20,6 @@ struct ListNode {
     ListNode(T in_data, ListNode* in_next = nullptr)
         : data{in_data}, next{in_next} {}
 };
-
 
 template <typename T>
 class List {
@@ -327,13 +326,13 @@ public:
     explicit List_Iterator(ListNode<T>* in_node) : current{in_node} {}
 
     List_Iterator& operator++() {
-        assert(current != nullptr && "out-of-bounds iterator increment!");
+        assert(current != nullptr && "out-of-boundata_structures iterator increment!");
         current = current->next;
         return *this;
     }
     
     List_Iterator operator++(int) {
-        assert(current != nullptr && "out-of-bounds iterator increment!");
+        assert(current != nullptr && "out-of-boundata_structures iterator increment!");
         List_Iterator temp{*this};
         current = current->next;
         return temp;
@@ -372,13 +371,13 @@ public:
     explicit Const_List_Iterator(ListNode<T>* in_node) : current{in_node} {}
 
     Const_List_Iterator& operator++() {
-        assert(current != nullptr && "out-of-bounds iterator increment!");
+        assert(current != nullptr && "out-of-boundata_structures iterator increment!");
         current = current->next;
         return *this;
     }
     
     Const_List_Iterator operator++(int) {
-        assert(current != nullptr && "out-of-bounds iterator increment!");
+        assert(current != nullptr && "out-of-boundata_structures iterator increment!");
         Const_List_Iterator temp{*this};
         current = current->next;
         return temp;

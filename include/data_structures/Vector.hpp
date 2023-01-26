@@ -1,3 +1,5 @@
+#pragma once
+
 #include <algorithm>
 #include <cstddef>
 #include <initializer_list>
@@ -6,12 +8,10 @@
 #include <stdexcept>
 #include <utility>
 
-
-namespace cds {
+namespace data_structures {
 
 template <typename T> class Vector_Iterator;
 template <typename T> class Const_Vector_Iterator;
-
 
 template <typename T>
 class Vector {
@@ -287,7 +287,7 @@ T& Vector<T>::at(std::size_t index) {
 }
 
 
-// operator[] overloads do not check that index is not >= sz.
+// operator[] overloadata_structures do not check that index is not >= sz.
 // If the user wants an exception to be thrown if the index is invalid he should use at(std::size_t).
 template <typename T>
 T& Vector<T>::operator[] (std::size_t index) {

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cassert>
 #include <cstddef>
 #include <initializer_list>
@@ -5,12 +7,10 @@
 #include <stdexcept>
 #include <utility>
 
-
-namespace cds {
+namespace data_structures {
 
 template <typename T> class BST_Iterator;
 template <typename T> class Const_BST_Iterator;
-
 
 template <typename T>
 struct TreeNode {
@@ -284,13 +284,13 @@ public:
         : bst{in_bst}, current{in_current} {}
 
     BST_Iterator& operator++() {
-        assert(current != nullptr && "out-of-bounds iterator increment!");
+        assert(current != nullptr && "out-of-boundata_structures iterator increment!");
         current = bst->p_find_next(bst->root, current);
         return *this;
     }
     
     BST_Iterator operator++(int) {
-        assert(current != nullptr && "out-of-bounds iterator increment!");
+        assert(current != nullptr && "out-of-boundata_structures iterator increment!");
         BST_Iterator temp{*this};
         current = bst->p_find_next(bst->root, current);
         return temp;
@@ -335,13 +335,13 @@ public:
         : bst{in_bst}, current{in_current} {}
 
     Const_BST_Iterator& operator++() {
-        assert(current != nullptr && "out-of-bounds iterator increment!");
+        assert(current != nullptr && "out-of-boundata_structures iterator increment!");
         current = bst->p_find_next(bst->root, current);
         return *this;
     }
     
     Const_BST_Iterator operator++(int) {
-        assert(current != nullptr && "out-of-bounds iterator increment!");
+        assert(current != nullptr && "out-of-boundata_structures iterator increment!");
         Const_BST_Iterator temp{*this};
         current = bst->p_find_next(bst->root, current);
         return temp;

@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"
-#include "Trie.hpp"
+#include <gtest/gtest.h>
+#include "Data_Structures.hpp"
 
-using namespace cds;
+using namespace data_structures;
 
 TEST(Trie, constructors) {
     Trie default_trie;

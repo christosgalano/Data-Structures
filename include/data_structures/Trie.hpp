@@ -1,8 +1,9 @@
+#pragma once
+
 #include <string>
 #include <initializer_list>
 
-
-namespace cds {
+namespace data_structures {
 
 class Trie {
 public:

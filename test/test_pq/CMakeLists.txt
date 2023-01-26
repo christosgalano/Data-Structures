@@ -1,6 +1,5 @@
 include_directories(
   ${SOURCE_DIR}
-  ${GTEST_INCLUDE_DIR}
 )
 
 add_executable(test_pq
@@ -8,9 +7,7 @@ add_executable(test_pq
 )
 
 target_link_libraries(test_pq
-  lib${PROJECT_NAME}
-  ${GTEST_LIB_DIR}/libgtest.a
+  ${PROJECT_NAME}
+  GTest::gtest_main
   pthread
 )
-
-install(TARGETS test_pq DESTINATION ${INSTALL_BIN_DIR})

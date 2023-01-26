@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"
-#include "Vector.hpp"
+#include <gtest/gtest.h>
+#include "Data_Structures.hpp"
 
-using namespace cds;
+using namespace data_structures;
 
 TEST(Vector, constructors) {
     Vector<int> default_vector;
@@ -122,7 +122,7 @@ TEST(Vector, find) {
     EXPECT_EQ(not_found, vector.end());
 }
 
-TEST(Vector, overloads) {
+TEST(Vector, overloadata_structures) {
     Vector<int> vector;
     for (int i = 0; i < 11; ++i)
         vector.push_back(i);
