@@ -43,6 +43,7 @@ jobs:
       - name: Run tests
         run: |
           cd ./build
+          make && make install
           ctest -c ${{ vars.BUILD_TYPE }}
 
   # publish:
