@@ -1,4 +1,4 @@
-name: build-analyze-test-upload
+name: ci
 
 on:
   push:
@@ -12,7 +12,7 @@ env:
   build_dir: ${{ github.workspace }}/build
 
 jobs:
-  build-analyze-test-upload:
+  ci:
     runs-on: ubuntu-latest
     environment: development
     steps:
@@ -25,12 +25,10 @@ jobs:
           languages: cpp
 
       - name: Configure CMake
-        run: |
-          cmake -B ${{ env.build_dir }} -DENABLE_TESTING=ON -DCMAKE_BUILD_TYPE=${{ env.config }}
+        run: cmake -B ${{ env.build_dir }} -DENABLE_TESTING=ON -DCMAKE_BUILD_TYPE=${{ env.config }}
 
       - name: Build
-        run: |
-          cmake --build ${{ env.build_dir }} --config ${{ env.config }}
+        run: cmake --build ${{ env.build_dir }} --config ${{ env.config }}
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2
@@ -45,8 +43,7 @@ jobs:
 
       - name: Run tests
         working-directory: ${{ env.build_dir }}
-        run: |
-          ctest -c ${{ env.config }}
+        run: ctest -c ${{ env.config }}
 
       - name: Upload headers as an artifact
         uses: actions/upload-artifact@v3

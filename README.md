@@ -1,6 +1,6 @@
 # Data-Structures
 
-[![build-analyze-test-upload](https://github.com/christosgalano/DataStructures/actions/workflows/build-analyze-test-upload.yaml/badge.svg?branch=main)](https://github.com/christosgalano/DataStructures/actions/workflows/build-analyze-test-upload.yaml)
+[![ci](https://github.com/christosgalano/DataStructures/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/christosgalano/DataStructures/actions/workflows/ci.yaml)
 
 ## General
 
