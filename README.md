@@ -1,6 +1,6 @@
 # Data-Structures
 
-[![ci](https://github.com/christosgalano/DataStructures/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/christosgalano/DataStructures/actions/workflows/ci.yaml)
+[![ci](https://github.com/christosgalano/Data-Structures/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/christosgalano/Data-Structures/actions/workflows/ci.yaml)
 
 ## General
 
